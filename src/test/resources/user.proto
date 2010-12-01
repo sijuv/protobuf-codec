@@ -1,0 +1,19 @@
+option java_package = "com.google.protobuf.codec.json";
+option java_outer_classname = "TypesProtoBuf";
+
+message Types{
+	optional string idstring = 1;
+	optional  int32 idint32 = 2;
+	optional  double iddouble = 3;
+	optional  float idfloat = 4;
+	optional  int64 idint64 = 5;
+	optional  uint32 iduint32 = 6;
+	optional  uint64 iduint64 = 7;
+	optional sint32 idsint32 = 8;
+	optional  sint64 idsint64 = 9;
+	optional  fixed32 idfixed32 = 10;
+	optional  fixed64 idfixed64 = 11;
+	optional  sfixed32 idsfixed32 = 12;
+	optional  sfixed64 idsfixed64 = 13;
+	optional  bool idbool = 14;
+	}
