@@ -7,7 +7,14 @@ Contains :
  - A JSON codec implementation, which uses jackson as the underlying json processor.
  
  
- 
+USAGE
+-------
+	Codec codec=new JsonCodec()
+	codec.setFeature(Feature.CLOSE_STREAM, true)
+	codec.fromMessage(Message, OutputStream)
+	Message =codec.toMessage(Class<Message>,InputStream)
+		
+- Check out the test cases for more details
  
 BUILDING
 ----------
