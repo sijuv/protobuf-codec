@@ -53,7 +53,7 @@ public abstract class AbstractCodec implements Codec {
 	}
 	
 	@Override
-	public Message toMessage(Class<Message> messageType, Reader reader)throws IOException {
+	public Message toMessage(Class<? extends Message> messageType, Reader reader)throws IOException {
 		Builder builder=null;
 		try{
 			Method builderMethod=messageType.getMethod("newBuilder");

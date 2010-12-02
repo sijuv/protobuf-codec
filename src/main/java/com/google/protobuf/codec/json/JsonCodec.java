@@ -159,7 +159,6 @@ public class JsonCodec extends AbstractCodec {
 		
 		private static Object getValue(Builder builder,FieldDescriptor field,JsonParser parser)throws IOException{
 			JsonToken token=parser.getCurrentToken();
-			System.out.println("Parsing field "+field.getName()+ " for token "+token);
 			Object value=null;
 			switch(token){
 			case VALUE_STRING:

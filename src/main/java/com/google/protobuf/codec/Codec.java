@@ -33,7 +33,7 @@ public interface Codec {
 	 * @return the {@link Message}
 	 * @throws IOException
 	 */
-	Message toMessage(Class<Message> messageType,Reader reader) throws IOException;
+	Message toMessage(Class<? extends Message> messageType,Reader reader) throws IOException;
 	
 	
 	/**
