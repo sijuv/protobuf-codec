@@ -1,7 +1,5 @@
-******************* Protobuf Codec ******************************
-
-WHAT IS THIS 
--------------------
+ABOUT
+------
 Contains coder/decoders for protobuf ( http://code.google.com/p/protobuf/ ) to other formats like json.
 
 Contains :
@@ -15,8 +13,11 @@ BUILDING
 ----------
 Prerequisites :
  - Needs Maven
- - Need protoc to run test cases. http://code.google.com/apis/protocolbuffers/docs/proto.html#generating
- 
+ - Needs protoc to run test cases. http://code.google.com/apis/protocolbuffers/docs/proto.html#generating
+
+
+DEPENDENCIES :
+- Jackson for json parsing. [ see pom for details ]
  
 BUGS & ISSUES
 ---------------
