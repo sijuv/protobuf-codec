@@ -15,9 +15,16 @@ import org.junit.Test;
 
 import com.google.protobuf.codec.Codec;
 import com.google.protobuf.codec.Codec.Feature;
+import com.google.protobuf.codec.json.TypesProtoBuf.Lang;
+import com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields;
 import com.google.protobuf.codec.json.TypesProtoBuf.Types;
+import com.google.protobuf.codec.json.TypesProtoBuf.Version;
 
-
+/**
+ * Test cases for json codec
+ * @author sijuv
+ *
+ */
 public class JsonCodecTest {
 
 	private Types types;
@@ -39,14 +46,14 @@ public class JsonCodecTest {
 				.setIdsint64(Long.MAX_VALUE)
 				.setIdstring("Hello World")
 				.setIduint32(100)
-				.setIduint64(100l).build();
+				.setIduint64(100l)
+				.setLang(Lang.HASKELL).build();
 		
 		JsonFactory factory=new JsonFactory();
 		
 		StringWriter writer=new StringWriter();
 		JsonGenerator generator=factory.createJsonGenerator(writer);
 		generator.writeStartObject();
-
 
 		generator.writeStringField("idstring", types.getIdstring());
 		generator.writeNumberField("idint32", types.getIdint32());
@@ -62,6 +69,7 @@ public class JsonCodecTest {
 		generator.writeNumberField("idsfixed32", types.getIdsfixed32());
 		generator.writeNumberField("idsfixed64", types.getIdsfixed64());
 		generator.writeBooleanField("idbool", types.getIdbool());
+		generator.writeStringField("lang", Lang.HASKELL.name());
 		generator.writeEndObject();
 		generator.close();
 		typesJson=writer.toString();
@@ -76,5 +84,59 @@ public class JsonCodecTest {
 		String jsonResponse=new String(bos.toByteArray());
 		assertEquals(typesJson, jsonResponse);
 		assertEquals(types, codec.toMessage(Types.class, new StringReader(typesJson)));
+	}
+	
+	@Test
+	public void ensureRepeatedFields() throws IOException{
+		RepeatedFields repFields=RepeatedFields.newBuilder()
+								.addId(1)
+								.addId(2)
+								.addLangs(Lang.HASKELL)
+								.addLangs(Lang.JAVA)
+								.addVersions(Version.newBuilder()
+												.setName("release")
+												.setVernum(1)
+												.build())
+								.addVersions(Version.newBuilder()
+												.setName("nightly")
+												.setVernum(2)
+												.build())
+								.addNames("funny")
+								.addNames("bones")
+								.build();
+		StringWriter writer1=new StringWriter();
+		new JsonCodec().fromMessage(repFields, writer1);
+		
+		StringWriter writer=new StringWriter();
+		JsonGenerator generator=(new JsonFactory()).createJsonGenerator(writer);
+		generator.writeStartObject();
+		generator.writeArrayFieldStart("id");
+		generator.writeNumber( 1);
+		generator.writeNumber( 2);
+		generator.writeEndArray();
+		generator.writeArrayFieldStart("names");
+		generator.writeString("funny");
+		generator.writeString("bones");
+		generator.writeEndArray();
+		generator.writeArrayFieldStart("versions");
+		generator.writeStartObject();
+		generator.writeStringField("name", "release");
+		generator.writeNumberField("vernum", 1);
+		generator.writeEndObject();
+		generator.writeStartObject();
+		generator.writeStringField("name", "nightly");
+		generator.writeNumberField("vernum", 2);
+		generator.writeEndObject();
+		generator.writeEndArray();
+		generator.writeArrayFieldStart("langs");
+		generator.writeString( Lang.HASKELL.name());
+		generator.writeString( Lang.JAVA.name());
+		generator.writeEndArray();
+		generator.writeEndObject();
+		generator.close();
+		assertEquals(writer1.toString(), writer.toString());
+		assertEquals(repFields, new JsonCodec().toMessage(RepeatedFields.class, new StringReader(writer1.toString())));
+
+		
 	}
 }

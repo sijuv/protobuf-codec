@@ -16,4 +16,24 @@ message Types{
 	optional  sfixed32 idsfixed32 = 12;
 	optional  sfixed64 idsfixed64 = 13;
 	optional  bool idbool = 14;
+	optional Lang lang=15;
 	}
+	
+	
+message RepeatedFields{
+	repeated int32 id=1;
+	repeated string names=2;
+	repeated Version versions=3;
+	repeated Lang langs=4;
+}
+
+enum Lang{
+	JAVA=1;
+	HASKELL=2;
+}
+
+message Version{
+	optional string name=1;
+	optional int32 vernum=2;
+}
+

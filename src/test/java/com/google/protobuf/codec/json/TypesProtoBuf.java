@@ -8,6 +8,73 @@ public final class TypesProtoBuf {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public enum Lang
+      implements com.google.protobuf.ProtocolMessageEnum {
+    JAVA(0, 1),
+    HASKELL(1, 2),
+    ;
+    
+    
+    public final int getNumber() { return value; }
+    
+    public static Lang valueOf(int value) {
+      switch (value) {
+        case 1: return JAVA;
+        case 2: return HASKELL;
+        default: return null;
+      }
+    }
+    
+    public static com.google.protobuf.Internal.EnumLiteMap<Lang>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<Lang>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<Lang>() {
+            public Lang findValueByNumber(int number) {
+              return Lang.valueOf(number)
+    ;        }
+          };
+    
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.google.protobuf.codec.json.TypesProtoBuf.getDescriptor().getEnumTypes().get(0);
+    }
+    
+    private static final Lang[] VALUES = {
+      JAVA, HASKELL, 
+    };
+    public static Lang valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+    private final int index;
+    private final int value;
+    private Lang(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+    
+    static {
+      com.google.protobuf.codec.json.TypesProtoBuf.getDescriptor();
+    }
+    
+    // @@protoc_insertion_point(enum_scope:Lang)
+  }
+  
   public static final class Types extends
       com.google.protobuf.GeneratedMessage {
     // Use Types.newBuilder() to construct.
@@ -133,7 +200,15 @@ public final class TypesProtoBuf {
     public boolean hasIdbool() { return hasIdbool; }
     public boolean getIdbool() { return idbool_; }
     
+    // optional .Lang lang = 15;
+    public static final int LANG_FIELD_NUMBER = 15;
+    private boolean hasLang;
+    private com.google.protobuf.codec.json.TypesProtoBuf.Lang lang_;
+    public boolean hasLang() { return hasLang; }
+    public com.google.protobuf.codec.json.TypesProtoBuf.Lang getLang() { return lang_; }
+    
     private void initFields() {
+      lang_ = com.google.protobuf.codec.json.TypesProtoBuf.Lang.JAVA;
     }
     public final boolean isInitialized() {
       return true;
@@ -183,6 +258,9 @@ public final class TypesProtoBuf {
       }
       if (hasIdbool()) {
         output.writeBool(14, getIdbool());
+      }
+      if (hasLang()) {
+        output.writeEnum(15, getLang().getNumber());
       }
       getUnknownFields().writeTo(output);
     }
@@ -248,6 +326,10 @@ public final class TypesProtoBuf {
       if (hasIdbool()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(14, getIdbool());
+      }
+      if (hasLang()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(15, getLang().getNumber());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -449,6 +531,9 @@ public final class TypesProtoBuf {
         if (other.hasIdbool()) {
           setIdbool(other.getIdbool());
         }
+        if (other.hasLang()) {
+          setLang(other.getLang());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -528,6 +613,16 @@ public final class TypesProtoBuf {
             }
             case 112: {
               setIdbool(input.readBool());
+              break;
+            }
+            case 120: {
+              int rawValue = input.readEnum();
+              com.google.protobuf.codec.json.TypesProtoBuf.Lang value = com.google.protobuf.codec.json.TypesProtoBuf.Lang.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(15, rawValue);
+              } else {
+                setLang(value);
+              }
               break;
             }
           }
@@ -790,6 +885,27 @@ public final class TypesProtoBuf {
         return this;
       }
       
+      // optional .Lang lang = 15;
+      public boolean hasLang() {
+        return result.hasLang();
+      }
+      public com.google.protobuf.codec.json.TypesProtoBuf.Lang getLang() {
+        return result.getLang();
+      }
+      public Builder setLang(com.google.protobuf.codec.json.TypesProtoBuf.Lang value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        result.hasLang = true;
+        result.lang_ = value;
+        return this;
+      }
+      public Builder clearLang() {
+        result.hasLang = false;
+        result.lang_ = com.google.protobuf.codec.json.TypesProtoBuf.Lang.JAVA;
+        return this;
+      }
+      
       // @@protoc_insertion_point(builder_scope:Types)
     }
     
@@ -802,11 +918,936 @@ public final class TypesProtoBuf {
     // @@protoc_insertion_point(class_scope:Types)
   }
   
+  public static final class RepeatedFields extends
+      com.google.protobuf.GeneratedMessage {
+    // Use RepeatedFields.newBuilder() to construct.
+    private RepeatedFields() {
+      initFields();
+    }
+    private RepeatedFields(boolean noInit) {}
+    
+    private static final RepeatedFields defaultInstance;
+    public static RepeatedFields getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public RepeatedFields getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.google.protobuf.codec.json.TypesProtoBuf.internal_static_RepeatedFields_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.google.protobuf.codec.json.TypesProtoBuf.internal_static_RepeatedFields_fieldAccessorTable;
+    }
+    
+    // repeated int32 id = 1;
+    public static final int ID_FIELD_NUMBER = 1;
+    private java.util.List<java.lang.Integer> id_ =
+      java.util.Collections.emptyList();
+    public java.util.List<java.lang.Integer> getIdList() {
+      return id_;
+    }
+    public int getIdCount() { return id_.size(); }
+    public int getId(int index) {
+      return id_.get(index);
+    }
+    
+    // repeated string names = 2;
+    public static final int NAMES_FIELD_NUMBER = 2;
+    private java.util.List<java.lang.String> names_ =
+      java.util.Collections.emptyList();
+    public java.util.List<java.lang.String> getNamesList() {
+      return names_;
+    }
+    public int getNamesCount() { return names_.size(); }
+    public java.lang.String getNames(int index) {
+      return names_.get(index);
+    }
+    
+    // repeated .Version versions = 3;
+    public static final int VERSIONS_FIELD_NUMBER = 3;
+    private java.util.List<com.google.protobuf.codec.json.TypesProtoBuf.Version> versions_ =
+      java.util.Collections.emptyList();
+    public java.util.List<com.google.protobuf.codec.json.TypesProtoBuf.Version> getVersionsList() {
+      return versions_;
+    }
+    public int getVersionsCount() { return versions_.size(); }
+    public com.google.protobuf.codec.json.TypesProtoBuf.Version getVersions(int index) {
+      return versions_.get(index);
+    }
+    
+    // repeated .Lang langs = 4;
+    public static final int LANGS_FIELD_NUMBER = 4;
+    private java.util.List<com.google.protobuf.codec.json.TypesProtoBuf.Lang> langs_ =
+      java.util.Collections.emptyList();
+    public java.util.List<com.google.protobuf.codec.json.TypesProtoBuf.Lang> getLangsList() {
+      return langs_;
+    }
+    public int getLangsCount() { return langs_.size(); }
+    public com.google.protobuf.codec.json.TypesProtoBuf.Lang getLangs(int index) {
+      return langs_.get(index);
+    }
+    
+    private void initFields() {
+    }
+    public final boolean isInitialized() {
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      for (int element : getIdList()) {
+        output.writeInt32(1, element);
+      }
+      for (java.lang.String element : getNamesList()) {
+        output.writeString(2, element);
+      }
+      for (com.google.protobuf.codec.json.TypesProtoBuf.Version element : getVersionsList()) {
+        output.writeMessage(3, element);
+      }
+      for (com.google.protobuf.codec.json.TypesProtoBuf.Lang element : getLangsList()) {
+        output.writeEnum(4, element.getNumber());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int element : getIdList()) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1 * getIdList().size();
+      }
+      {
+        int dataSize = 0;
+        for (java.lang.String element : getNamesList()) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeStringSizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1 * getNamesList().size();
+      }
+      for (com.google.protobuf.codec.json.TypesProtoBuf.Version element : getVersionsList()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, element);
+      }
+      {
+        int dataSize = 0;
+        for (com.google.protobuf.codec.json.TypesProtoBuf.Lang element : getLangsList()) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeEnumSizeNoTag(element.getNumber());
+        }
+        size += dataSize;
+        size += 1 * getLangsList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> {
+      private com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields result;
+      
+      // Construct using com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields.newBuilder()
+      private Builder() {}
+      
+      private static Builder create() {
+        Builder builder = new Builder();
+        builder.result = new com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields();
+        return builder;
+      }
+      
+      protected com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields internalGetResult() {
+        return result;
+      }
+      
+      public Builder clear() {
+        if (result == null) {
+          throw new IllegalStateException(
+            "Cannot call clear() after build().");
+        }
+        result = new com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields();
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(result);
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields.getDescriptor();
+      }
+      
+      public com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields getDefaultInstanceForType() {
+        return com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields.getDefaultInstance();
+      }
+      
+      public boolean isInitialized() {
+        return result.isInitialized();
+      }
+      public com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields build() {
+        if (result != null && !isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return buildPartial();
+      }
+      
+      private com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        if (!isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return buildPartial();
+      }
+      
+      public com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields buildPartial() {
+        if (result == null) {
+          throw new IllegalStateException(
+            "build() has already been called on this Builder.");
+        }
+        if (result.id_ != java.util.Collections.EMPTY_LIST) {
+          result.id_ =
+            java.util.Collections.unmodifiableList(result.id_);
+        }
+        if (result.names_ != java.util.Collections.EMPTY_LIST) {
+          result.names_ =
+            java.util.Collections.unmodifiableList(result.names_);
+        }
+        if (result.versions_ != java.util.Collections.EMPTY_LIST) {
+          result.versions_ =
+            java.util.Collections.unmodifiableList(result.versions_);
+        }
+        if (result.langs_ != java.util.Collections.EMPTY_LIST) {
+          result.langs_ =
+            java.util.Collections.unmodifiableList(result.langs_);
+        }
+        com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields returnMe = result;
+        result = null;
+        return returnMe;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields) {
+          return mergeFrom((com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields other) {
+        if (other == com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields.getDefaultInstance()) return this;
+        if (!other.id_.isEmpty()) {
+          if (result.id_.isEmpty()) {
+            result.id_ = new java.util.ArrayList<java.lang.Integer>();
+          }
+          result.id_.addAll(other.id_);
+        }
+        if (!other.names_.isEmpty()) {
+          if (result.names_.isEmpty()) {
+            result.names_ = new java.util.ArrayList<java.lang.String>();
+          }
+          result.names_.addAll(other.names_);
+        }
+        if (!other.versions_.isEmpty()) {
+          if (result.versions_.isEmpty()) {
+            result.versions_ = new java.util.ArrayList<com.google.protobuf.codec.json.TypesProtoBuf.Version>();
+          }
+          result.versions_.addAll(other.versions_);
+        }
+        if (!other.langs_.isEmpty()) {
+          if (result.langs_.isEmpty()) {
+            result.langs_ = new java.util.ArrayList<com.google.protobuf.codec.json.TypesProtoBuf.Lang>();
+          }
+          result.langs_.addAll(other.langs_);
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              addId(input.readInt32());
+              break;
+            }
+            case 10: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              while (input.getBytesUntilLimit() > 0) {
+                addId(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 18: {
+              addNames(input.readString());
+              break;
+            }
+            case 26: {
+              com.google.protobuf.codec.json.TypesProtoBuf.Version.Builder subBuilder = com.google.protobuf.codec.json.TypesProtoBuf.Version.newBuilder();
+              input.readMessage(subBuilder, extensionRegistry);
+              addVersions(subBuilder.buildPartial());
+              break;
+            }
+            case 32: {
+              int rawValue = input.readEnum();
+              com.google.protobuf.codec.json.TypesProtoBuf.Lang value = com.google.protobuf.codec.json.TypesProtoBuf.Lang.valueOf(rawValue);
+              if (value == null) {
+                unknownFields.mergeVarintField(4, rawValue);
+              } else {
+                addLangs(value);
+              }
+              break;
+            }
+            case 34: {
+              int length = input.readRawVarint32();
+              int oldLimit = input.pushLimit(length);
+              while(input.getBytesUntilLimit() > 0) {
+                int rawValue = input.readEnum();
+                com.google.protobuf.codec.json.TypesProtoBuf.Lang value = com.google.protobuf.codec.json.TypesProtoBuf.Lang.valueOf(rawValue);
+                if (value == null) {
+                  unknownFields.mergeVarintField(4, rawValue);
+                } else {
+                  addLangs(value);
+                }
+              }
+              input.popLimit(oldLimit);
+              break;
+            }
+          }
+        }
+      }
+      
+      
+      // repeated int32 id = 1;
+      public java.util.List<java.lang.Integer> getIdList() {
+        return java.util.Collections.unmodifiableList(result.id_);
+      }
+      public int getIdCount() {
+        return result.getIdCount();
+      }
+      public int getId(int index) {
+        return result.getId(index);
+      }
+      public Builder setId(int index, int value) {
+        result.id_.set(index, value);
+        return this;
+      }
+      public Builder addId(int value) {
+        if (result.id_.isEmpty()) {
+          result.id_ = new java.util.ArrayList<java.lang.Integer>();
+        }
+        result.id_.add(value);
+        return this;
+      }
+      public Builder addAllId(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        if (result.id_.isEmpty()) {
+          result.id_ = new java.util.ArrayList<java.lang.Integer>();
+        }
+        super.addAll(values, result.id_);
+        return this;
+      }
+      public Builder clearId() {
+        result.id_ = java.util.Collections.emptyList();
+        return this;
+      }
+      
+      // repeated string names = 2;
+      public java.util.List<java.lang.String> getNamesList() {
+        return java.util.Collections.unmodifiableList(result.names_);
+      }
+      public int getNamesCount() {
+        return result.getNamesCount();
+      }
+      public java.lang.String getNames(int index) {
+        return result.getNames(index);
+      }
+      public Builder setNames(int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  result.names_.set(index, value);
+        return this;
+      }
+      public Builder addNames(java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  if (result.names_.isEmpty()) {
+          result.names_ = new java.util.ArrayList<java.lang.String>();
+        }
+        result.names_.add(value);
+        return this;
+      }
+      public Builder addAllNames(
+          java.lang.Iterable<? extends java.lang.String> values) {
+        if (result.names_.isEmpty()) {
+          result.names_ = new java.util.ArrayList<java.lang.String>();
+        }
+        super.addAll(values, result.names_);
+        return this;
+      }
+      public Builder clearNames() {
+        result.names_ = java.util.Collections.emptyList();
+        return this;
+      }
+      
+      // repeated .Version versions = 3;
+      public java.util.List<com.google.protobuf.codec.json.TypesProtoBuf.Version> getVersionsList() {
+        return java.util.Collections.unmodifiableList(result.versions_);
+      }
+      public int getVersionsCount() {
+        return result.getVersionsCount();
+      }
+      public com.google.protobuf.codec.json.TypesProtoBuf.Version getVersions(int index) {
+        return result.getVersions(index);
+      }
+      public Builder setVersions(int index, com.google.protobuf.codec.json.TypesProtoBuf.Version value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        result.versions_.set(index, value);
+        return this;
+      }
+      public Builder setVersions(int index, com.google.protobuf.codec.json.TypesProtoBuf.Version.Builder builderForValue) {
+        result.versions_.set(index, builderForValue.build());
+        return this;
+      }
+      public Builder addVersions(com.google.protobuf.codec.json.TypesProtoBuf.Version value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        if (result.versions_.isEmpty()) {
+          result.versions_ = new java.util.ArrayList<com.google.protobuf.codec.json.TypesProtoBuf.Version>();
+        }
+        result.versions_.add(value);
+        return this;
+      }
+      public Builder addVersions(com.google.protobuf.codec.json.TypesProtoBuf.Version.Builder builderForValue) {
+        if (result.versions_.isEmpty()) {
+          result.versions_ = new java.util.ArrayList<com.google.protobuf.codec.json.TypesProtoBuf.Version>();
+        }
+        result.versions_.add(builderForValue.build());
+        return this;
+      }
+      public Builder addAllVersions(
+          java.lang.Iterable<? extends com.google.protobuf.codec.json.TypesProtoBuf.Version> values) {
+        if (result.versions_.isEmpty()) {
+          result.versions_ = new java.util.ArrayList<com.google.protobuf.codec.json.TypesProtoBuf.Version>();
+        }
+        super.addAll(values, result.versions_);
+        return this;
+      }
+      public Builder clearVersions() {
+        result.versions_ = java.util.Collections.emptyList();
+        return this;
+      }
+      
+      // repeated .Lang langs = 4;
+      public java.util.List<com.google.protobuf.codec.json.TypesProtoBuf.Lang> getLangsList() {
+        return java.util.Collections.unmodifiableList(result.langs_);
+      }
+      public int getLangsCount() {
+        return result.getLangsCount();
+      }
+      public com.google.protobuf.codec.json.TypesProtoBuf.Lang getLangs(int index) {
+        return result.getLangs(index);
+      }
+      public Builder setLangs(int index, com.google.protobuf.codec.json.TypesProtoBuf.Lang value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        result.langs_.set(index, value);
+        return this;
+      }
+      public Builder addLangs(com.google.protobuf.codec.json.TypesProtoBuf.Lang value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        if (result.langs_.isEmpty()) {
+          result.langs_ = new java.util.ArrayList<com.google.protobuf.codec.json.TypesProtoBuf.Lang>();
+        }
+        result.langs_.add(value);
+        return this;
+      }
+      public Builder addAllLangs(
+          java.lang.Iterable<? extends com.google.protobuf.codec.json.TypesProtoBuf.Lang> values) {
+        if (result.langs_.isEmpty()) {
+          result.langs_ = new java.util.ArrayList<com.google.protobuf.codec.json.TypesProtoBuf.Lang>();
+        }
+        super.addAll(values, result.langs_);
+        return this;
+      }
+      public Builder clearLangs() {
+        result.langs_ = java.util.Collections.emptyList();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:RepeatedFields)
+    }
+    
+    static {
+      defaultInstance = new RepeatedFields(true);
+      com.google.protobuf.codec.json.TypesProtoBuf.internalForceInit();
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:RepeatedFields)
+  }
+  
+  public static final class Version extends
+      com.google.protobuf.GeneratedMessage {
+    // Use Version.newBuilder() to construct.
+    private Version() {
+      initFields();
+    }
+    private Version(boolean noInit) {}
+    
+    private static final Version defaultInstance;
+    public static Version getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public Version getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.google.protobuf.codec.json.TypesProtoBuf.internal_static_Version_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.google.protobuf.codec.json.TypesProtoBuf.internal_static_Version_fieldAccessorTable;
+    }
+    
+    // optional string name = 1;
+    public static final int NAME_FIELD_NUMBER = 1;
+    private boolean hasName;
+    private java.lang.String name_ = "";
+    public boolean hasName() { return hasName; }
+    public java.lang.String getName() { return name_; }
+    
+    // optional int32 vernum = 2;
+    public static final int VERNUM_FIELD_NUMBER = 2;
+    private boolean hasVernum;
+    private int vernum_ = 0;
+    public boolean hasVernum() { return hasVernum; }
+    public int getVernum() { return vernum_; }
+    
+    private void initFields() {
+    }
+    public final boolean isInitialized() {
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (hasName()) {
+        output.writeString(1, getName());
+      }
+      if (hasVernum()) {
+        output.writeInt32(2, getVernum());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      if (hasName()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeStringSize(1, getName());
+      }
+      if (hasVernum()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, getVernum());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static com.google.protobuf.codec.json.TypesProtoBuf.Version parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.google.protobuf.codec.json.TypesProtoBuf.Version prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> {
+      private com.google.protobuf.codec.json.TypesProtoBuf.Version result;
+      
+      // Construct using com.google.protobuf.codec.json.TypesProtoBuf.Version.newBuilder()
+      private Builder() {}
+      
+      private static Builder create() {
+        Builder builder = new Builder();
+        builder.result = new com.google.protobuf.codec.json.TypesProtoBuf.Version();
+        return builder;
+      }
+      
+      protected com.google.protobuf.codec.json.TypesProtoBuf.Version internalGetResult() {
+        return result;
+      }
+      
+      public Builder clear() {
+        if (result == null) {
+          throw new IllegalStateException(
+            "Cannot call clear() after build().");
+        }
+        result = new com.google.protobuf.codec.json.TypesProtoBuf.Version();
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(result);
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.google.protobuf.codec.json.TypesProtoBuf.Version.getDescriptor();
+      }
+      
+      public com.google.protobuf.codec.json.TypesProtoBuf.Version getDefaultInstanceForType() {
+        return com.google.protobuf.codec.json.TypesProtoBuf.Version.getDefaultInstance();
+      }
+      
+      public boolean isInitialized() {
+        return result.isInitialized();
+      }
+      public com.google.protobuf.codec.json.TypesProtoBuf.Version build() {
+        if (result != null && !isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return buildPartial();
+      }
+      
+      private com.google.protobuf.codec.json.TypesProtoBuf.Version buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        if (!isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return buildPartial();
+      }
+      
+      public com.google.protobuf.codec.json.TypesProtoBuf.Version buildPartial() {
+        if (result == null) {
+          throw new IllegalStateException(
+            "build() has already been called on this Builder.");
+        }
+        com.google.protobuf.codec.json.TypesProtoBuf.Version returnMe = result;
+        result = null;
+        return returnMe;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.google.protobuf.codec.json.TypesProtoBuf.Version) {
+          return mergeFrom((com.google.protobuf.codec.json.TypesProtoBuf.Version)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.codec.json.TypesProtoBuf.Version other) {
+        if (other == com.google.protobuf.codec.json.TypesProtoBuf.Version.getDefaultInstance()) return this;
+        if (other.hasName()) {
+          setName(other.getName());
+        }
+        if (other.hasVernum()) {
+          setVernum(other.getVernum());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                return this;
+              }
+              break;
+            }
+            case 10: {
+              setName(input.readString());
+              break;
+            }
+            case 16: {
+              setVernum(input.readInt32());
+              break;
+            }
+          }
+        }
+      }
+      
+      
+      // optional string name = 1;
+      public boolean hasName() {
+        return result.hasName();
+      }
+      public java.lang.String getName() {
+        return result.getName();
+      }
+      public Builder setName(java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  result.hasName = true;
+        result.name_ = value;
+        return this;
+      }
+      public Builder clearName() {
+        result.hasName = false;
+        result.name_ = getDefaultInstance().getName();
+        return this;
+      }
+      
+      // optional int32 vernum = 2;
+      public boolean hasVernum() {
+        return result.hasVernum();
+      }
+      public int getVernum() {
+        return result.getVernum();
+      }
+      public Builder setVernum(int value) {
+        result.hasVernum = true;
+        result.vernum_ = value;
+        return this;
+      }
+      public Builder clearVernum() {
+        result.hasVernum = false;
+        result.vernum_ = 0;
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:Version)
+    }
+    
+    static {
+      defaultInstance = new Version(true);
+      com.google.protobuf.codec.json.TypesProtoBuf.internalForceInit();
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:Version)
+  }
+  
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_Types_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Types_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_RepeatedFields_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_RepeatedFields_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_Version_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_Version_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -816,15 +1857,20 @@ public final class TypesProtoBuf {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\035src/test/resources/user.proto\"\204\002\n\005Type" +
+      "\n\035src/test/resources/user.proto\"\231\002\n\005Type" +
       "s\022\020\n\010idstring\030\001 \001(\t\022\017\n\007idint32\030\002 \001(\005\022\020\n\010" +
       "iddouble\030\003 \001(\001\022\017\n\007idfloat\030\004 \001(\002\022\017\n\007idint" +
       "64\030\005 \001(\003\022\020\n\010iduint32\030\006 \001(\r\022\020\n\010iduint64\030\007" +
       " \001(\004\022\020\n\010idsint32\030\010 \001(\021\022\020\n\010idsint64\030\t \001(\022" +
       "\022\021\n\tidfixed32\030\n \001(\007\022\021\n\tidfixed64\030\013 \001(\006\022\022" +
       "\n\nidsfixed32\030\014 \001(\017\022\022\n\nidsfixed64\030\r \001(\020\022\016" +
-      "\n\006idbool\030\016 \001(\010B/\n\036com.google.protobuf.co" +
-      "dec.jsonB\rTypesProtoBuf"
+      "\n\006idbool\030\016 \001(\010\022\023\n\004lang\030\017 \001(\0162\005.Lang\"]\n\016R" +
+      "epeatedFields\022\n\n\002id\030\001 \003(\005\022\r\n\005names\030\002 \003(\t" +
+      "\022\032\n\010versions\030\003 \003(\0132\010.Version\022\024\n\005langs\030\004 ",
+      "\003(\0162\005.Lang\"\'\n\007Version\022\014\n\004name\030\001 \001(\t\022\016\n\006v" +
+      "ernum\030\002 \001(\005*\035\n\004Lang\022\010\n\004JAVA\020\001\022\013\n\007HASKELL" +
+      "\020\002B/\n\036com.google.protobuf.codec.jsonB\rTy" +
+      "pesProtoBuf"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -836,9 +1882,25 @@ public final class TypesProtoBuf {
           internal_static_Types_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Types_descriptor,
-              new java.lang.String[] { "Idstring", "Idint32", "Iddouble", "Idfloat", "Idint64", "Iduint32", "Iduint64", "Idsint32", "Idsint64", "Idfixed32", "Idfixed64", "Idsfixed32", "Idsfixed64", "Idbool", },
+              new java.lang.String[] { "Idstring", "Idint32", "Iddouble", "Idfloat", "Idint64", "Iduint32", "Iduint64", "Idsint32", "Idsint64", "Idfixed32", "Idfixed64", "Idsfixed32", "Idsfixed64", "Idbool", "Lang", },
               com.google.protobuf.codec.json.TypesProtoBuf.Types.class,
               com.google.protobuf.codec.json.TypesProtoBuf.Types.Builder.class);
+          internal_static_RepeatedFields_descriptor =
+            getDescriptor().getMessageTypes().get(1);
+          internal_static_RepeatedFields_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_RepeatedFields_descriptor,
+              new java.lang.String[] { "Id", "Names", "Versions", "Langs", },
+              com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields.class,
+              com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields.Builder.class);
+          internal_static_Version_descriptor =
+            getDescriptor().getMessageTypes().get(2);
+          internal_static_Version_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_Version_descriptor,
+              new java.lang.String[] { "Name", "Vernum", },
+              com.google.protobuf.codec.json.TypesProtoBuf.Version.class,
+              com.google.protobuf.codec.json.TypesProtoBuf.Version.Builder.class);
           return null;
         }
       };
