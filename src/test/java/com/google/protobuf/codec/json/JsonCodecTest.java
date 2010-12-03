@@ -78,7 +78,7 @@ public class JsonCodecTest {
 		typesJson=writer.toString();
 	}
 
-	//@Test
+	@Test
 	public void ensureTypes() throws IOException{
 		Codec codec=new JsonCodec();
 		codec.setFeature(Feature.CLOSE_STREAM, true);
@@ -89,7 +89,7 @@ public class JsonCodecTest {
 		assertEquals(types, codec.toMessage(Types.class, new StringReader(typesJson)));
 	}
 	
-	//@Test
+	@Test
 	public void ensureRepeatedFields() throws IOException{
 		RepeatedFields repFields=RepeatedFields.newBuilder()
 								.addId(1)
@@ -144,7 +144,7 @@ public class JsonCodecTest {
 		assertEquals(repFields, new JsonCodec().toMessage(RepeatedFields.class, new StringReader(writer1.toString())));
 	}
 	
-	//@Test
+	@Test
 	public void testForExtensionsWithRegistry() throws IOException{
 		Foo foo=Foo.newBuilder()
 					.setId(1)
