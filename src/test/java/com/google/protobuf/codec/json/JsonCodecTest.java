@@ -103,6 +103,7 @@ public class JsonCodecTest {
 												.build())
 								.addNames("funny")
 								.addNames("bones")
+								.setFieldId(5)
 								.build();
 		StringWriter writer1=new StringWriter();
 		new JsonCodec().fromMessage(repFields, writer1);
@@ -110,6 +111,8 @@ public class JsonCodecTest {
 		StringWriter writer=new StringWriter();
 		JsonGenerator generator=(new JsonFactory()).createJsonGenerator(writer);
 		generator.writeStartObject();
+		generator.writeNumberField("fieldId", 5);
+
 		generator.writeArrayFieldStart("id");
 		generator.writeNumber( 1);
 		generator.writeNumber( 2);

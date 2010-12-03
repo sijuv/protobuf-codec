@@ -21,10 +21,11 @@ message Types{
 	
 	
 message RepeatedFields{
-	repeated int32 id=1;
-	repeated string names=2;
-	repeated Version versions=3;
-	repeated Lang langs=4;
+	required int32 fieldId=1;
+	repeated int32 id=2;
+	repeated string names=3;
+	repeated Version versions=4;
+	repeated Lang langs=5;
 }
 
 enum Lang{
