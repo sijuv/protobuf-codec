@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 
 /**
@@ -17,23 +18,47 @@ import com.google.protobuf.Message;
 public interface Codec {
 	
 	/**
-	 * Write this Message {@link Message} to the provided output stream. The writer is <b>not</b> closed once the message is written out.
-	 * The client should close the stream itself. 
+	 * Write this Message {@link Message} to the provided output stream. The underlying stream is not closed by default, 
+	 * user {@link Feature#CLOSE_STREAM} for the required settings.
+	 * The default values are not written out, the reason being that the client should be aware of the protobuf schema.
+	 * Extension fields are written out.
 	 * @param message the {@link Message}
 	 * @param os the output stream
 	 * @throws IOException
-	 * @throws IllegalArgumentException if the provied message is not initialized 
+	 * @throws IllegalArgumentException if the provided message is not initialized 
 	 */
 	void fromMessage(Message message,Writer writer) throws IOException;
 	
 	/**
-	 * Create a {@link Message} off the provided input stream. The reader is <b>not</b> closed once the message is read in.
+	 * Create a {@link Message} off the provided input stream.The underlying stream is not closed by default, 
+	 * user {@link Feature#CLOSE_STREAM} for the required settings.
+	 * In case null values encountered are skipped since protobuf does not support null values yet 
+	 * ( http://code.google.com/p/protobuf/issues/detail?id=57 )
+	 * Extension fields are not written out
 	 * @param messageType the {@link Class} corresponding to the {@link Message} the stream needs to be read into
 	 * @param in the input stream
 	 * @return the {@link Message}
 	 * @throws IOException
 	 */
 	Message toMessage(Class<? extends Message> messageType,Reader reader) throws IOException;
+	
+	
+	/**
+	 * Create a {@link Message} off the provided input stream.The underlying stream is not closed by default, 
+	 * user {@link Feature#CLOSE_STREAM} for the required settings.
+	 * In case null values encountered are skipped since protobuf does not support null values yet 
+	 * ( http://code.google.com/p/protobuf/issues/detail?id=57 )
+	 * Extension fields looked up from the provided extension registry, if a field from the provided stream
+	 * is identified to be an extension field, but a corresponding mapping is not found in the registry, then 
+	 * the field is skipped.
+	 * @param messageType the {@link Class} corresponding to the {@link Message} the stream needs to be read into
+	 * @param in the input stream
+	 * @param extnRegistry the extension registry
+	 * @return the {@link Message}
+	 * @throws IOException
+	 */
+	Message toMessage(Class<? extends Message> messageType,Reader reader,ExtensionRegistry extnRegistry) throws IOException;
+	
 	
 	
 	/**
@@ -45,15 +70,29 @@ public interface Codec {
 	 */
 	void fromMessage(Message message,OutputStream os) throws IOException;
 	
+	
+
+	
 	/**
 	 * Read the message from the stream, uses UTF8 as the charset encoding.
 	 * @param messageType the {@link Class} corresponding to the {@link Message} the stream needs to be read into
 	 * @param in
 	 * @return
 	 * @throws IOException
-	 * @see {@link #toMessage(Reader)}
+	 * @see {@link #toMessage(Class, Reader)}
 	 */
 	Message toMessage(Class<Message> messageType,InputStream in) throws IOException;
+	
+	/**
+	 * Read the message from the stream, uses UTF8 as the charset encoding.
+	 * @param messageType the {@link Class} corresponding to the {@link Message} the stream needs to be read into
+	 * @param in
+	 * @param extnRegistry the extension registry
+	 * @return
+	 * @throws IOException
+	 * @see {@link #toMessage(Reader)}
+	 */
+	Message toMessage(Class<Message> messageType,InputStream in,ExtensionRegistry extnRegistry) throws IOException;
 	
 	/**
 	 * Set a codec feature, 

@@ -38,3 +38,16 @@ message Version{
 	optional int32 vernum=2;
 }
 
+
+message Foo{
+	optional int32 id=1;
+	optional string name=2;
+	extensions 100 to 200;
+}
+
+extend Foo{
+	optional string alias =100;
+    repeated Lang langs=101;
+
+}
+

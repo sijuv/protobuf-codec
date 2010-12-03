@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import com.google.protobuf.Message.Builder;
 
@@ -47,18 +48,13 @@ public abstract class AbstractCodec implements Codec {
 	}
 	
 	@Override
-	public Message toMessage(Class<Message> messageType,InputStream in) throws IOException {
-		Reader reader=new BufferedReader(new InputStreamReader(in,DEFAULT_CHARSET));
-		return toMessage(messageType,reader);
-	}
-	
-	@Override
-	public Message toMessage(Class<? extends Message> messageType, Reader reader)throws IOException {
+	public Message toMessage(Class<? extends Message> messageType,
+			Reader reader, ExtensionRegistry extnRegistry) throws IOException {
 		Builder builder=null;
 		try{
 			Method builderMethod=messageType.getMethod("newBuilder");
 			builder=(Builder) builderMethod.invoke(messageType);
-			return readFromStream(builder, reader);
+			return readFromStream(builder, reader,extnRegistry);
 		}catch(IOException ioe){
 			throw ioe;
 		}catch(Exception e){
@@ -68,17 +64,69 @@ public abstract class AbstractCodec implements Codec {
 		}
 	}
 	
+	@Override
+	public Message toMessage(Class<Message> messageType,InputStream in) throws IOException {
+		Reader reader=new BufferedReader(new InputStreamReader(in,DEFAULT_CHARSET));
+		return toMessage(messageType,reader);
+	}
+	
+	@Override
+	public Message toMessage(Class<? extends Message> messageType, Reader reader)throws IOException {
+		return toMessage(messageType, reader,ExtensionRegistry.getEmptyRegistry());
+	}
+	
+	@Override
+	public Message toMessage(Class<Message> messageType, InputStream in,
+			ExtensionRegistry extnRegistry) throws IOException {
+		Reader reader=new BufferedReader(new InputStreamReader(in,DEFAULT_CHARSET));
+		return toMessage(messageType,reader,extnRegistry);
+	}
 	
 	protected void closeStreams(Closeable stream) throws IOException{
 		if(isFeatureSet(Feature.CLOSE_STREAM)&&Boolean.TRUE.equals(Feature.CLOSE_STREAM)){
-			
 			stream.close();
 		}
 	}
 	
+	/**
+	 * Whether the provied field name follows the naming scheme for extn fields.
+	 * default pattern is "[<field_name>]"
+	 * @param fieldName the field name
+	 * @return <code>true</code> if the field name follows the naming scheme for extn fields, <code>false</code> otherwise
+	 *         
+	 */
+	public  static boolean isExtensionFieldName(String fieldName){
+		StringBuilder strb=new StringBuilder(fieldName);
+		return (strb.charAt(0)=='[') && (strb.charAt(fieldName.length()-1)==']');
+	}
+	
+	/**
+	 * Returns the field protobuf extn field name for the provided field name.
+	 * @param fieldName the provided field name
+	 * @return the protobuf field name = <field_name> for "[<field_name>]"
+	 * @throws IllegalArgumentException if {@link #isExtensionFieldName(String)} returns false
+	 */
+	public static String parseExtensionFieldName(String fieldName){
+		if(!isExtensionFieldName(fieldName)){
+			throw new IllegalArgumentException(String.format("Field [%s] does not follow the extn field naming scheme"));
+		}
+		StringBuilder strb=new StringBuilder(fieldName);
+		return strb.substring(1,strb.length()-1);
+	}
+	
+	/**
+	 * The name this extn field needs to be written as 
+	 * @param fieldName
+	 * @return "[<fieldName>]"
+	 */
+	public static String getExtensionFieldName(String fieldName){
+		StringBuilder strb=new StringBuilder(fieldName);
+		return strb.insert(0,"[").append("]").toString();
+	}
+	
 	protected abstract void writeToStream(Message message, Writer writer) throws IOException;	
 	
-	protected abstract Message readFromStream(Builder builder,Reader reader) throws IOException;
+	protected abstract Message readFromStream(Builder builder,Reader reader,ExtensionRegistry extnRegistry) throws IOException;
 	
 	protected abstract void validateAndSetFeature(Feature feature, Object value);
 	

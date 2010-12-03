@@ -18,6 +18,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
+import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
 import com.google.protobuf.Message.Builder;
 import com.google.protobuf.UnknownFieldSet;
@@ -44,17 +45,17 @@ public class JsonCodec extends AbstractCodec {
 	 * need to be boxed.
 	 * @param builder the message builder
 	 * @param reader the input stream,
+	 * @param extnRegistry the extension registry to use
 	 * @see Codec#toMessage(Class, Reader)
 	 */
 	@Override
-	protected Message readFromStream(Builder builder, Reader reader)throws IOException {
+	protected Message readFromStream(Builder builder, Reader reader,ExtensionRegistry extnRegistry)throws IOException {
 		JsonFactory jsonFactory=new JsonFactory();
-		
 		JsonParser parser=jsonFactory.createJsonParser(reader);
 		if(isFeatureSet(Feature.CLOSE_STREAM)&&Boolean.FALSE.equals(getFeature(Feature.CLOSE_STREAM))){
 			parser.configure(org.codehaus.jackson.JsonParser.Feature.AUTO_CLOSE_SOURCE, false);
 		}
-		return JacksonJsonReader.parse(builder, parser);
+		return JacksonJsonReader.parse(builder, parser,extnRegistry);
 	}
 	
 	/**
@@ -102,187 +103,5 @@ public class JsonCodec extends AbstractCodec {
 			throw new IllegalArgumentException(String.format("Unsupported feature [%s]",feature.name()));
 		}
 		
-	}
-	
-	/**
-	 * Jackson json reader
-	 * @author sijuv
-	 *
-	 */
-	private static class JacksonJsonReader{
-		
-		
-		private static Message parse(Builder builder,JsonParser parser) throws IOException{
-			parser.nextToken();
-			parseObject(builder,parser);
-			return builder.build();
-		}
-		
-		
-		private static Builder parseObject(Builder builder,JsonParser parser) throws IOException{
-			assert(JsonToken.START_OBJECT.equals(parser.getCurrentToken())); // Ensure start token
-			
-			Descriptor descriptor =builder.getDescriptorForType();
-			while(!parser.nextToken().equals(JsonToken.END_OBJECT)){
-				JsonToken currToken=parser.getCurrentToken();
-				assert(currToken.equals(JsonToken.FIELD_NAME));
-				String fieldName=parser.getCurrentName();
-				FieldDescriptor field=descriptor.findFieldByName(fieldName);
-				parser.nextToken();
-				setFields(builder, field, parser);	
-			}
-			return builder;
-		}
-		
-		private static Builder setFields(Builder builder,FieldDescriptor field,JsonParser parser)throws IOException{
-			Object value=getValue(builder, field, parser);
-			if(value==null){
-				//What to do in case of null values ? protobuf does not allow null.
-			}else{
-				builder.setField(field, value);
-			}
-			return builder;
-		}
-
-		
-		private static void handleArray(Builder builder,FieldDescriptor arrayField,JsonParser parser) throws IOException{
-			while(!JsonToken.END_ARRAY.equals(parser.nextToken())){
-				JsonToken token=parser.getCurrentToken();
-				if(JsonToken.START_ARRAY.equals(token)){
-					//
-				}else{
-					Object value=getValue(builder, arrayField, parser);
-					builder.addRepeatedField(arrayField, value);
-				}
-			}
-		}
-		
-		private static Object getValue(Builder builder,FieldDescriptor field,JsonParser parser)throws IOException{
-			JsonToken token=parser.getCurrentToken();
-			Object value=null;
-			switch(token){
-			case VALUE_STRING:
-				if(JavaType.ENUM.equals(field.getJavaType())){
-					value=field.getEnumType().findValueByName(parser.getText());
-				}else if(JavaType.STRING.equals(field.getJavaType())){
-					value=parser.getText();
-				}else{
-					throw new UnsupportedEncodingException(String.format("Unsupported java type [%s] for field [%s] for json type VALUE_STRING",
-																		field.getJavaType(),field.getName()));  
-				}
-				break;
-			case VALUE_TRUE:
-				value=Boolean.TRUE;
-				break;
-			case VALUE_FALSE:
-				value=Boolean.FALSE;
-				break;
-			case VALUE_NUMBER_INT:
-				if(field.getJavaType().equals(JavaType.INT)){
-					value=parser.getIntValue();
-				}else if(JavaType.LONG.equals(field.getJavaType())){
-					value=parser.getLongValue();
-				}else{
-					throw new UnsupportedEncodingException(String.format("Unsupported java type [%s] for field [%s] for json type VALUE_NUMBER_INT",
-							field.getJavaType(),field.getName()));
-				}
-				break;
-			case VALUE_NUMBER_FLOAT:
-				if(JavaType.DOUBLE.equals(field.getJavaType())){
-					value=parser.getDoubleValue();
-				}else if(JavaType.FLOAT.equals(field.getJavaType())){
-					value=parser.getFloatValue();
-				}else{
-					throw new UnsupportedEncodingException(String.format("Unsupported java type [%s] for field [%s] for json type VALUE_NUMBER_FLOAT",
-							field.getJavaType(),field.getName()));
-				}
-				break;
-			case START_OBJECT:
-				Builder newBuilder=builder.newBuilderForField(field);
-				value=parseObject(newBuilder, parser).build();
-				break;
-			case START_ARRAY:
-				handleArray(builder, field, parser);
-				break;
-				
-			case VALUE_NULL:
-				//protobuf does not support null, returning null here however.
-				break;
-			default:
-				throw new UnsupportedEncodingException(String.format("Unsupported token type [%s]",token)); 
-			}
-			return value;
-		}
-	}
-
-
-	/**
-	 * Jackson json writer
-	 * @author sijuv
-	 *
-	 */
-	private static class JacksonJsonWriter {
-
-		private static void generateJSONFields(Message message,JsonGenerator generator) throws IOException {
-			
-			generator.writeStartObject();
-			Iterator<Map.Entry<FieldDescriptor, Object>> iterator = message.getAllFields().entrySet().iterator(); //Get all set fields
-			while (iterator.hasNext()) {
-				Map.Entry<FieldDescriptor, Object> record = iterator.next();
-				FieldDescriptor field = record.getKey(); 
-				String fieldName = field.isExtension() ? "[" + field.getName()+ "]" : field.getName(); //If extn field? box
-				Object value = record.getValue();
-				if (field.isRepeated()) {
-					generator.writeArrayFieldStart(fieldName);
-					Iterator<?> iter = ((List<?>) value).iterator();
-					while (iter.hasNext()) {
-						writeFieldValue(field, iter.next(), generator);
-					}
-					generator.writeEndArray();
-				} else {
-					generator.writeFieldName(fieldName);
-					writeFieldValue(field, value, generator);
-				}
-			}
-			generator.writeEndObject();
-		}
-
-		//Extract the field value depending on its java type
-		private static void writeFieldValue(FieldDescriptor fieldDesc,Object value, JsonGenerator generator) throws IOException {
-			switch (fieldDesc.getJavaType()) {
-			case INT:
-				generator.writeNumber((Integer) value);
-				break;
-			case LONG:
-				generator.writeNumber((Long) value);
-				break;
-			case FLOAT:
-				generator.writeNumber((Float) value);
-				break;
-			case DOUBLE:
-				generator.writeNumber((Double) value);
-				break;
-			case BOOLEAN:
-				generator.writeBoolean((Boolean) value);
-				break;
-			case STRING:
-				generator.writeString((String) value);
-				break;
-			case ENUM:
-				generator.writeString(((EnumValueDescriptor) value).getName());
-				break;
-			case BYTE_STRING:
-				break;// What to do here? can be used for unknown fields?//TODO UnknownFields?
-			case MESSAGE:
-				generateJSONFields((Message) value, generator);
-				break;
-			default:
-				throw new UnsupportedEncodingException(
-						String.format(
-								"Unspupported protobuf java field type [%s] for field [%s] ",
-								fieldDesc.getJavaType(), fieldDesc.getName()));
-
-			}
-		}
 	}
 }
