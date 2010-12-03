@@ -126,7 +126,9 @@ public interface Codec {
 		/** Pretty print **/
 		PRETTY_PRINT,
 		/** Close the underlying stream */
-		CLOSE_STREAM; 
+		CLOSE_STREAM,
+		/** Write out the default values of fields in case those fields are not set */
+		WRITE_DEFAULT_VALUES; 
 		
 	}
 }
