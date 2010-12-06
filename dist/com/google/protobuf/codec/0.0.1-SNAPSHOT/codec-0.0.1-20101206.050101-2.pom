@@ -66,8 +66,8 @@
 	</build>
 	<distributionManagement>
 		<repository>
-			<id>gh-pages</id>
-			<url>file:///${basedir}/../dist/</url>
+			<id>git-protobuf-repo</id>
+			<url>http://github.com/sijuv/protobuf-codec/tree/master/dist/</url>
 		</repository>
 	</distributionManagement>
 </project>
