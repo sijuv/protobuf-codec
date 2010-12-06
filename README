@@ -1,3 +1,7 @@
+UPDATES:
+---------
+06/Dec : Mavenized and disted verion 0.0.1 
+
 ABOUT
 ------
 Contains coder/decoders for protobuf ( http://code.google.com/p/protobuf/ ) to other formats like json.
@@ -15,6 +19,32 @@ USAGE
 	Message =codec.toMessage(Class<Message>,InputStream)
 		
 - Check out the test cases for more details
+
+
+GETTING TO WORK WITH MAVEN
+-------------------------------
+- Add the below repository in your pom file
+  	<repositories>
+  	....
+		<repository>
+			<id>protobuf-codec</id>
+			<url>http://github.com/sijuv/protobuf-codec/raw/master/dist</url>
+		</repository>
+    ....
+	</repositories>
+
+- Add dependency to protobuf-codec
+	<dependencies>
+	....
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>codec</artifactId>
+			<version><the version #></version>
+		</dependency>
+	....
+	</dependencies>
+		
+
  
 BUILDING
 ----------
