@@ -1,6 +1,10 @@
 UPDATES:
 ---------
 06/Dec : Mavenized and disted verion 0.0.1 
+08/Dec : Disted version 1.0
+     - Added support for xml
+     - Added support for unknown fields
+     - Split into a maven multi module project- core,xml and json
 
 ABOUT
 ------
@@ -55,15 +59,12 @@ Prerequisites :
 
 DEPENDENCIES :
 - Jackson for json parsing. [ see pom for details ]
+- woodstox for xml parsing [see pom for details ]
  
 BUGS & ISSUES
 ---------------
 Raise bugs/issues on git
 
-
-LIMITATIONS
---------------
-- UnknownFieldSet not supported.
 
 
 

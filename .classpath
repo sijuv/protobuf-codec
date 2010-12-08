@@ -7,7 +7,6 @@
 	<classpathentry kind="src" path="protobuf-codec-xml/src/main/java"/>
 	<classpathentry kind="src" path="protobuf-codec-xml/src/test/java"/>
 	<classpathentry kind="src" path="protobuf-codec-xml/src/test/resources"/>
-	<classpathentry kind="src" path="protobuf-codec-core/src/test/java"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
