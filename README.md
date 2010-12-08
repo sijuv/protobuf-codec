@@ -3,6 +3,7 @@ Protobuf-codec provides codec for protobuf and other data formats like xml/json.
  for json and [woodstox]( http://woodstox.codehaus.org/) for xml for parsing. 
 
 [Project Wiki](https://github.com/sijuv/protobuf-codec/wiki)
+[JavaDocs] (dist/apidocs/index.html)
 
 ## UPDATES:
 06/Dec : 
