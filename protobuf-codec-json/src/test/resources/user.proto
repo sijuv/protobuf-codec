@@ -1,4 +1,4 @@
-option java_package = "com.google.protobuf.codec.json";
+option java_package = "protobuf.codec.json";
 option java_outer_classname = "TypesProtoBuf";
 
 message Types{
@@ -38,7 +38,6 @@ message Version{
 	optional int32 vernum=2;
 }
 
-
 message Foo{
 	optional int32 id=1;
 	optional string name=2;
@@ -48,6 +47,25 @@ message Foo{
 extend Foo{
 	optional string alias =100;
     repeated Lang langs=101;
-
+    repeated Version version=102;
+    optional Version version1=103;
 }
+message Unknown{
+	optional string name=1;
+	optional int32 id=2;
+	repeated string alias =3;
+	repeated Version verions=4;
+	optional Version liveversion=5;
+	extensions 100 to 200;
+}
+
+extend Unknown{
+	optional string othername =100;
+	optional int32 otherid=101;
+	repeated Lang lang=102;
+	optional Version extversion=103;
+	repeated Version extversions=104;
+}
+
+
 

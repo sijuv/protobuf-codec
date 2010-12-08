@@ -1,0 +1,22 @@
+option java_package = "protobuf.codec.json";
+option java_outer_classname = "UnknownProtoBuf";
+
+message Unknown{
+	optional string name=1;
+	repeated Version verions=4;
+	extensions 100 to 200;
+}
+
+message Version{
+	optional string name=1;
+}
+
+enum Lang{
+	JAVA=1;
+	HASKELL=2;
+}
+
+extend Unknown{
+	optional int32 otherid=101;
+	repeated Lang lang=102;
+}

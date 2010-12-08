@@ -1,13 +1,15 @@
-package com.google.protobuf.codec;
+package protobuf.codec;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Map;
 
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.Message;
+import com.google.protobuf.UnknownFieldSet;
 
 /**
  * Protobuf codec. 
@@ -18,10 +20,28 @@ import com.google.protobuf.Message;
 public interface Codec {
 	
 	/**
+	 * The default element name that the for the field in the response/input which contains 
+	 * the unknown fields. This element name can be overridden with the value set to the 
+	 * feature {@link Feature#UNKNOWN_FIELD_ELEM_NAME}
+	 */
+	public static final String DEFAULT_UNKNOWN_FIELD_ELEM_NAME="unknownfields";
+	
+	/**
+	 * The default prefix to be used for extension fields. The value of this field can be controlled by the 
+	 * feature {@link Feature#EXTENSION_FIELD_NAME_PREFIX}. The name of the extension field will be the value that this feature gives
+	 * appended by "-<fieldname>"
+	 */
+	public static final String DEFAULT_EXTENSION_NAME_PREFIX="extension";
+
+	
+	/**
 	 * Write this Message {@link Message} to the provided output stream. The underlying stream is not closed by default, 
 	 * user {@link Feature#CLOSE_STREAM} for the required settings.
 	 * The default values are not written out, the reason being that the client should be aware of the protobuf schema.
-	 * Extension fields are written out.
+	 * The {@link UnknownFieldSet} are written out on whether the {@link Feature#UNKNOWN_FIELDS} is set. By default, {@link UnknownFieldSet}
+	 * is written out Check the codec implementation on how the unknown field set is written out.
+	 * Extension fields are written out and the naming depends on the {@link Feature#EXTENSION_FIELD_NAME_PREFIX} set. 
+	 * If an extension field  not provided in the registry is encountered that field is skipped.
 	 * @param message the {@link Message}
 	 * @param os the output stream
 	 * @throws IOException
@@ -34,13 +54,17 @@ public interface Codec {
 	 * user {@link Feature#CLOSE_STREAM} for the required settings.
 	 * In case null values encountered are skipped since protobuf does not support null values yet 
 	 * ( http://code.google.com/p/protobuf/issues/detail?id=57 )
-	 * Extension fields are not written out
+	 * The default values are not written out, the reason being that the client should be aware of the protobuf schema.
+	 * The {@link UnknownFieldSet} are read in depending on whether the {@link Feature#UNKNOWN_FIELDS} is set. By default, {@link UnknownFieldSet}
+	 * is read in. Check the codec implementation on how the unknown field need to be passed in.
+	 * Extension field names depend on {@link Feature#EXTENSION_FIELD_NAME_PREFIX}
+	 * If an extension field  not provided in the registry is encountered that field is skipped.
 	 * @param messageType the {@link Class} corresponding to the {@link Message} the stream needs to be read into
 	 * @param in the input stream
 	 * @return the {@link Message}
 	 * @throws IOException
 	 */
-	Message toMessage(Class<? extends Message> messageType,Reader reader) throws IOException;
+	<T extends Message> T toMessage(Class<T> messageType,Reader reader) throws IOException;
 	
 	
 	/**
@@ -53,11 +77,11 @@ public interface Codec {
 	 * the field is skipped.
 	 * @param messageType the {@link Class} corresponding to the {@link Message} the stream needs to be read into
 	 * @param in the input stream
-	 * @param extnRegistry the extension registry
+	 * @param extnRegistry the extension registry which contains the defn for extension fields.
 	 * @return the {@link Message}
 	 * @throws IOException
 	 */
-	Message toMessage(Class<? extends Message> messageType,Reader reader,ExtensionRegistry extnRegistry) throws IOException;
+	<T extends Message> T toMessage(Class<T> messageType,Reader reader,ExtensionRegistry extnRegistry) throws IOException;
 	
 	
 	
@@ -81,7 +105,7 @@ public interface Codec {
 	 * @throws IOException
 	 * @see {@link #toMessage(Class, Reader)}
 	 */
-	Message toMessage(Class<Message> messageType,InputStream in) throws IOException;
+	<T extends Message> T toMessage(Class<T> messageType,InputStream in) throws IOException;
 	
 	/**
 	 * Read the message from the stream, uses UTF8 as the charset encoding.
@@ -92,7 +116,7 @@ public interface Codec {
 	 * @throws IOException
 	 * @see {@link #toMessage(Reader)}
 	 */
-	Message toMessage(Class<Message> messageType,InputStream in,ExtensionRegistry extnRegistry) throws IOException;
+	<T extends Message> T toMessage(Class<T> messageType,InputStream in,ExtensionRegistry extnRegistry) throws IOException;
 	
 	/**
 	 * Set a codec feature, 
@@ -118,6 +142,12 @@ public interface Codec {
 	boolean isFeatureSet(Feature feature);
 	
 	/**
+	 * Returns an unmodifiable map containing all features and the values they are set to.
+	 * @return
+	 */
+	Map<Feature,Object> getAllFeaturesSet();
+	
+	/**
 	 * Features supported by the codec.
 	 * @author sijuv
 	 *
@@ -126,8 +156,12 @@ public interface Codec {
 		/** Pretty print **/
 		PRETTY_PRINT,
 		/** Close the underlying stream */
-		CLOSE_STREAM;
-
-		
+		CLOSE_STREAM,
+		/** Support unknown fields */
+		SUPPORT_UNKNOWN_FIELDS,
+		/** Unknown field element name */
+		UNKNOWN_FIELD_ELEM_NAME,
+		/** Extension field name prefix */
+		EXTENSION_FIELD_NAME_PREFIX;
 	}
 }

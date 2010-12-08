@@ -1,4 +1,4 @@
-package com.google.protobuf.codec.json;
+package protobuf.codec.json;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -8,9 +8,13 @@ import java.util.Map;
 
 import org.codehaus.jackson.JsonGenerator;
 
-import com.google.protobuf.Message;
+import protobuf.codec.AbstractCodec;
+import protobuf.codec.Codec.Feature;
+
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.Message;
+import com.google.protobuf.UnknownFieldSet;
 
 /**
  * Jackson json writer
@@ -20,33 +24,44 @@ import com.google.protobuf.Descriptors.FieldDescriptor;
  */
 public class JacksonJsonWriter {
 
-	public static void generateJSONFields(Message message,
-			JsonGenerator generator) throws IOException {
-
+	public static void generateJSONFields(Message message,JsonGenerator generator,Map<Feature,Object> featureMap) throws IOException {
+		
+		generator.configure(org.codehaus.jackson.JsonGenerator.Feature.AUTO_CLOSE_TARGET, (Boolean)featureMap.get(Feature.CLOSE_STREAM));
+		
+		if(AbstractCodec.prettyPrint(featureMap)){
+			generator.useDefaultPrettyPrinter(); 
+		}
+		if(!AbstractCodec.closeStream(featureMap)){
+			generator.configure(org.codehaus.jackson.JsonGenerator.Feature.AUTO_CLOSE_TARGET, false);
+		}
+		
 		generator.writeStartObject();
 		Iterator<Map.Entry<FieldDescriptor, Object>> iterator = message.getAllFields().entrySet().iterator(); // Get all set fields
 		while (iterator.hasNext()) {
 			Map.Entry<FieldDescriptor, Object> record = iterator.next();
 			FieldDescriptor field = record.getKey();
-			String fieldName = field.isExtension() ?JsonCodec.getExtensionFieldName(field.getName()): field.getName(); // If extn field? box
+			String fieldName = field.isExtension() ?JsonCodec.getExtensionFieldName(field.getName(),featureMap): field.getName(); // If extn field? box
 			Object value = record.getValue();
 			if (field.isRepeated()) {
 				generator.writeArrayFieldStart(fieldName);
 				Iterator<?> iter = ((List<?>) value).iterator();
 				while (iter.hasNext()) {
-					writeFieldValue(field, iter.next(), generator);
+					writeFieldValue(field, iter.next(), generator,featureMap);
 				}
 				generator.writeEndArray();
 			} else {
 				generator.writeFieldName(fieldName);
-				writeFieldValue(field, value, generator);
+				writeFieldValue(field, value, generator,featureMap);
 			}
+		}
+		if(AbstractCodec.supportUnknownFields(featureMap)){
+			writeUnknownFieldSet(message.getUnknownFields(),generator,featureMap);
 		}
 		generator.writeEndObject();
 	}
 
 	// Extract the field value depending on its java type
-	private static void writeFieldValue(FieldDescriptor fieldDesc,Object value, JsonGenerator generator) throws IOException {
+	private static void writeFieldValue(FieldDescriptor fieldDesc,Object value, JsonGenerator generator,Map<Feature, Object> featureMap) throws IOException {
 		
 		switch (fieldDesc.getJavaType()) {
 		case INT:
@@ -74,7 +89,7 @@ public class JacksonJsonWriter {
 			break;// What to do here? can be used for unknown fields?//TODO
 					// UnknownFields?
 		case MESSAGE:
-			generateJSONFields((Message) value, generator);
+			generateJSONFields((Message) value, generator,featureMap);
 			break;
 		default:
 			throw new UnsupportedEncodingException(
@@ -84,4 +99,12 @@ public class JacksonJsonWriter {
 
 		}
 	}
+	
+	private static void writeUnknownFieldSet(UnknownFieldSet unknownFields,JsonGenerator generator,Map<Feature,Object> featureMap) throws IOException{
+		if(unknownFields!=null&& unknownFields.asMap().size()>0){
+			generator.writeStringField(AbstractCodec.getUnknownFieldElementName(featureMap),
+					AbstractCodec.encodeUnknownFieldsToHexString(unknownFields));
+		}
+	}
+	
 }

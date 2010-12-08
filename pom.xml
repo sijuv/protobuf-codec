@@ -1,20 +1,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>com.google.protobuf</groupId>
-	<artifactId>codec</artifactId>
-	<version>0.0.1</version>
-	<packaging>jar</packaging>
-
-	<name>codec</name>
-	<url>http://maven.apache.org</url>
-
+	<artifactId>protobuf-codec</artifactId>
+	<packaging>pom</packaging>
+	<version>0.0.2</version>
+	<name>Protobuf codec parent pom</name>
+	<url>https://github.com/sijuv/protobuf-codec</url>
+	<repositories>
+		<repository>
+			<id>protobuf-java-format</id>
+			<url>http://protobuf-java-format.googlecode.com/svn/trunk/repo</url>
+		</repository>
+	</repositories>
+	<modules>
+		<module>protobuf-codec-core</module>
+		<module>protobuf-codec-json</module>
+		<module>protobuf-codec-xml</module>
+	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+
 	<dependencies>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java-format</artifactId>
+			<version>1.1</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.protobuf</groupId>
 			<artifactId>protobuf-java</artifactId>
@@ -24,46 +39,27 @@
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
 			<version>1.6.2</version>
+			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>woodstox-core-asl</artifactId>
+			<version>4.0.9</version>
+			<scope>provided</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.4</version>
+		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>generate-sources</id>
-						<phase>process-test-resources</phase>
-						<configuration>
-							<tasks>
-								<exec executable="protoc">
-									<arg value="--java_out=src/test/java" />
-									<arg value="src/test/resources/user.proto" />
-								</exec>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<distributionManagement>
 		<repository>
 			<id>git-protobuf-repo</id>

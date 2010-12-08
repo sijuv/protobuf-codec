@@ -1,6 +1,6 @@
-package com.google.protobuf.codec.json;
+package protobuf.codec.json;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -8,30 +8,47 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 
-import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
+import protobuf.codec.Codec;
+import protobuf.codec.Codec.Feature;
+import protobuf.codec.json.JsonCodec;
+import protobuf.codec.json.TypesProtoBuf;
+import protobuf.codec.json.TypesProtoBuf.Foo;
+import protobuf.codec.json.TypesProtoBuf.Lang;
+import protobuf.codec.json.TypesProtoBuf.RepeatedFields;
+import protobuf.codec.json.TypesProtoBuf.Types;
+import protobuf.codec.json.TypesProtoBuf.Version;
+
 import com.google.protobuf.ExtensionRegistry;
-import com.google.protobuf.codec.Codec;
-import com.google.protobuf.codec.Codec.Feature;
-import com.google.protobuf.codec.json.TypesProtoBuf.Foo;
-import com.google.protobuf.codec.json.TypesProtoBuf.Lang;
-import com.google.protobuf.codec.json.TypesProtoBuf.RepeatedFields;
-import com.google.protobuf.codec.json.TypesProtoBuf.Types;
-import com.google.protobuf.codec.json.TypesProtoBuf.Version;
+
 
 /**
  * Test cases for json codec
  * @author sijuv
  *
  */
+//TODO Exten repeated objects
 public class JsonCodecTest {
 
 	private Types types;
 	private String typesJson;
+	
+	
+	@Test(expected=IllegalArgumentException.class)
+	public void ensureSafelyInitialized() throws IOException{
+		RepeatedFields repFields=RepeatedFields.newBuilder()
+		.addId(1)
+		.addId(2)
+		.addLangs(Lang.HASKELL)
+		.addLangs(Lang.JAVA).buildPartial();
+		new JsonCodec().fromMessage(repFields, new StringWriter());
+		
+	}
+	
 	
 	@Before
 	public void setupTypes() throws IOException {
@@ -161,8 +178,8 @@ public class JsonCodecTest {
 		generator.writeStartObject();
 		generator.writeNumberField("id", 1);
 		generator.writeStringField("name", "Hello World");
-		generator.writeStringField("[alias]", "Hi There");
-		generator.writeArrayFieldStart("[langs]");
+		generator.writeStringField(Codec.DEFAULT_EXTENSION_NAME_PREFIX+"-"+"alias", "Hi There");
+		generator.writeArrayFieldStart(Codec.DEFAULT_EXTENSION_NAME_PREFIX+"-"+"langs");
 		generator.writeString(Lang.HASKELL.name());
 		generator.writeString(Lang.JAVA.name());
 		generator.writeEndArray();
@@ -195,8 +212,8 @@ public class JsonCodecTest {
 		generator.writeStartObject();
 		generator.writeNumberField("id", 1);
 		generator.writeStringField("name", "Hello World");
-		generator.writeStringField("[alias]", "Hi There");
-		generator.writeArrayFieldStart("[langs]");
+		generator.writeStringField(Codec.DEFAULT_EXTENSION_NAME_PREFIX+"-"+"alias", "Hi There");
+		generator.writeArrayFieldStart(Codec.DEFAULT_EXTENSION_NAME_PREFIX+"-"+"langs");
 		generator.writeString(Lang.HASKELL.name());
 		generator.writeString(Lang.JAVA.name());
 		generator.writeEndArray();
@@ -211,4 +228,76 @@ public class JsonCodecTest {
 		.setName("Hello World").build();
 		assertEquals(new JsonCodec().toMessage(Foo.class, new StringReader(codecout.toString())),foo1);
 	}
+	
+	@Test
+	public void testExtensionObjects()throws Exception{
+		Foo foo1=Foo.newBuilder()
+		.setId(1)
+		.setName("Hello World")
+		.setExtension(TypesProtoBuf.langs, new ArrayList<Lang>(){{
+			add(Lang.HASKELL);
+			add(Lang.JAVA);
+		}})
+		.addExtension(TypesProtoBuf.version,Version.newBuilder()
+				.setName("release")
+				.setVernum(1)
+				.build())
+		.addExtension(TypesProtoBuf.version,Version.newBuilder()
+				.setName("nightly")
+				.setVernum(2)
+				.build())
+		.setExtension(TypesProtoBuf.version1,Version.newBuilder()
+				.setName("snapshot")
+				.setVernum(10)
+				.build())
+		.setExtension(TypesProtoBuf.alias, "Hi There")
+		.build();
+		StringWriter sw=new StringWriter();
+		Codec codec=new JsonCodec();
+		codec.fromMessage(foo1, sw);
+		
+		StringWriter writer=new StringWriter();
+		JsonGenerator generator=new JsonFactory().createJsonGenerator(writer);
+		generator.writeStartObject();
+		generator.writeNumberField("id", 1);
+		generator.writeStringField("name", "Hello World");
+		generator.writeStringField(Codec.DEFAULT_EXTENSION_NAME_PREFIX+"-"+"alias", "Hi There");
+		generator.writeArrayFieldStart(Codec.DEFAULT_EXTENSION_NAME_PREFIX+"-"+"langs");
+		generator.writeString(Lang.HASKELL.name());
+		generator.writeString(Lang.JAVA.name());
+		generator.writeEndArray();
+		generator.writeArrayFieldStart(Codec.DEFAULT_EXTENSION_NAME_PREFIX+"-"+"version");
+		generator.writeStartObject();
+		generator.writeStringField("name", "release");
+		generator.writeNumberField("vernum", 1);
+		generator.writeEndObject();
+		generator.writeStartObject();
+		generator.writeStringField("name", "nightly");
+		generator.writeNumberField("vernum", 2);
+		generator.writeEndObject();
+		generator.writeEndArray();		
+		generator.writeFieldName(Codec.DEFAULT_EXTENSION_NAME_PREFIX+"-"+"version1");
+		generator.writeStartObject();
+		generator.writeStringField("name", "snapshot");
+		generator.writeNumberField("vernum", 10);
+		generator.writeEndObject();		
+		generator.writeEndObject();
+		generator.close();
+		
+		assertEquals(writer.toString(), sw.toString());
+		//System.out.println(writer.toString());
+		
+		Foo foo2= codec.toMessage(Foo.class, new StringReader(writer.toString()));
+		Foo foonoextn=Foo.newBuilder().setId(1).setName("Hello World").build();
+		assertEquals(foo2,foonoextn);
+		
+		ExtensionRegistry reg=ExtensionRegistry.newInstance();
+		reg.add(TypesProtoBuf.alias);
+		reg.add(TypesProtoBuf.langs);
+		reg.add(TypesProtoBuf.version);
+		reg.add(TypesProtoBuf.version1);
+		foo2=codec.toMessage(Foo.class, new StringReader(writer.toString()),reg);
+		assertEquals(foo1, foo2);
+	}
+
 }
