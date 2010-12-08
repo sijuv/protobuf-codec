@@ -4,8 +4,6 @@ Protobuf-codec provides codec for protobuf and other data formats like xml/json.
 
 [Project Wiki](https://github.com/sijuv/protobuf-codec/wiki)
 
-[JavaDocs] (dist/apidocs/index.html)
-
 ## UPDATES:
 06/Dec : 
 	- Mavenized and disted verion 0.0.1
