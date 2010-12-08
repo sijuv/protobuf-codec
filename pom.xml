@@ -49,11 +49,23 @@ http://maven.apache.org/maven-v4_0_0.xsd">
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 	<distributionManagement>
 		<repository>
 			<id>git-protobuf-repo</id>
 			<url>http://github.com/sijuv/protobuf-codec/tree/master/dist/</url>
 		</repository>
 	</distributionManagement>
-	
+
 </project>

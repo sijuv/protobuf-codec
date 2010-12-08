@@ -2,7 +2,7 @@
 Protobuf-codec provides codec for protobuf and other data formats like xml/json. It is fast and relies on proven frameworks like [jackson](http://jackson.codehaus.org/)
  for json and [woodstox]( http://woodstox.codehaus.org/) for xml for parsing. 
 
-[[Project Wiki](https://github.com/sijuv/protobuf-codec/wiki)
+[Project Wiki](https://github.com/sijuv/protobuf-codec/wiki)
 
 ## UPDATES:
 06/Dec : 
@@ -23,8 +23,8 @@ Protobuf-codec provides codec for protobuf and other data formats like xml/json.
 
 
 ## DEPENDENCIES :
-- Jackson for json parsing. [ see pom for details ]
-- woodstox for xml parsing [see pom for details ]
+- Jackson for json parsing. 
+- woodstox for xml parsing 
 - commons-codec for hex encode/decode
 
 
