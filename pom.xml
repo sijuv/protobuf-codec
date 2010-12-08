@@ -55,4 +55,5 @@ http://maven.apache.org/maven-v4_0_0.xsd">
 			<url>http://github.com/sijuv/protobuf-codec/tree/master/dist/</url>
 		</repository>
 	</distributionManagement>
+	
 </project>

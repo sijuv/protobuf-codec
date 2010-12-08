@@ -18,6 +18,8 @@ import java.util.Map;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
+import protobuf.codec.Codec.Feature;
+
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
@@ -40,6 +42,8 @@ public abstract class AbstractCodec implements Codec {
 		featureMap.put(Feature.SUPPORT_UNKNOWN_FIELDS, Boolean.TRUE);
 		featureMap.put(Feature.UNKNOWN_FIELD_ELEM_NAME, Codec.DEFAULT_UNKNOWN_FIELD_ELEM_NAME);
 		featureMap.put(Feature.EXTENSION_FIELD_NAME_PREFIX,Codec.DEFAULT_EXTENSION_NAME_PREFIX);
+		featureMap.put(Feature.CLOSE_STREAM, true);
+
 	}
 	
 	@Override

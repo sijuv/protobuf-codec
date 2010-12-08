@@ -32,7 +32,6 @@ public class JsonCodec extends AbstractCodec {
 	
 	
 	public JsonCodec(){
-		setFeature(Feature.CLOSE_STREAM, true);
 	}
 
 

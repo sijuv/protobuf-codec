@@ -370,8 +370,7 @@ public class XmlCodecTest {
 		reg.add(TypesProtoBuf.langs);
 		reg.add(TypesProtoBuf.version);
 		reg.add(TypesProtoBuf.version1);
-		//System.out.println(XmlFormat.printToString(foo1));
-		//XmlFormat.merge(XmlFormat.printToString(foo1), Foo.newBuilder());
+
 		foo3=(Foo) codec.toMessage(Foo.class, new StringReader(sw.toString()),reg);
 
 		assertEquals(foo1, foo3);

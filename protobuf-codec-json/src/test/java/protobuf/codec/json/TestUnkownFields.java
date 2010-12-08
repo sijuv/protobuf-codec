@@ -48,6 +48,7 @@ public class TestUnkownFields {
 		StringWriter writer=new StringWriter();
 		codec.fromMessage(unknown1, writer);
 		String json=writer.toString();
+		System.out.println(json);
 		ExtensionRegistry extnReg=ExtensionRegistry.newInstance();
 		extnReg.add(TypesProtoBuf.othername);
 		assertEquals(typesUnknown, codec.toMessage(Unknown.class, new StringReader(json),extnReg));
