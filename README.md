@@ -1,4 +1,5 @@
-## ABOUT 
+## ABOUT
+
 Protobuf-codec provides codec for protobuf and other data formats like xml/json. It is fast and relies on proven frameworks like [[jackson|http://jackson.codehaus.org/]]
  for json and [[woodstox | http://woodstox.codehaus.org/]] for xml for parsing. 
 
@@ -19,7 +20,7 @@ Protobuf-codec provides codec for protobuf and other data formats like xml/json.
  
 ## BUILDING
  - Needs Maven
- - Needs protoc to run test cases. http://code.google.com/apis/protocolbuffers/docs/proto.html#generating
+ - Needs protoc to run test cases. [[http://code.google.com/apis/protocolbuffers/docs/proto.html#generating]]
 
 
 ## DEPENDENCIES :
@@ -28,7 +29,7 @@ Protobuf-codec provides codec for protobuf and other data formats like xml/json.
 
 
 ## BUGS & ISSUES
-Raise bugs/issues on git
+Raise bugs/issues on git [[https://github.com/sijuv/protobuf-codec/issues]]
 
 
 
