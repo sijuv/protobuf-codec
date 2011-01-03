@@ -6,11 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonGenerator;
 
 import protobuf.codec.AbstractCodec;
 import protobuf.codec.Codec.Feature;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Message;
@@ -86,8 +88,8 @@ public class JacksonJsonWriter {
 			generator.writeString(((EnumValueDescriptor) value).getName());
 			break;
 		case BYTE_STRING:
-			break;// What to do here? can be used for unknown fields?//TODO
-					// UnknownFields?
+			generator.writeString(Base64.encodeBase64String(((ByteString)value).toByteArray()));
+			break;
 		case MESSAGE:
 			generateJSONFields((Message) value, generator,featureMap);
 			break;
@@ -103,7 +105,7 @@ public class JacksonJsonWriter {
 	private static void writeUnknownFieldSet(UnknownFieldSet unknownFields,JsonGenerator generator,Map<Feature,Object> featureMap) throws IOException{
 		if(unknownFields!=null&& unknownFields.asMap().size()>0){
 			generator.writeStringField(AbstractCodec.getUnknownFieldElementName(featureMap),
-					AbstractCodec.encodeUnknownFieldsToHexString(unknownFields));
+					AbstractCodec.encodeUnknownFieldsToString(unknownFields));
 		}
 	}
 	

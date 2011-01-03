@@ -9,11 +9,14 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.codec.binary.Base64;
+
 import protobuf.codec.AbstractCodec;
 import protobuf.codec.Codec.Feature;
 
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import com.google.protobuf.UnknownFieldSet;
 
@@ -71,8 +74,8 @@ public class XmlWriter {
 			writer.writeCharacters(((EnumValueDescriptor) value).getName());
 			break;
 		case BYTE_STRING:
-			break;// What to do here? can be used for unknown fields?//TODO
-					// UnknownFields?
+			writer.writeCharacters(Base64.encodeBase64String(((ByteString)value).toByteArray()));
+			break;
 		case MESSAGE:
 			writeXml((Message) value, writer,featureMap);
 			break;
@@ -88,7 +91,7 @@ public class XmlWriter {
 	public static void writeUnknownFields(UnknownFieldSet unknownFields,XMLStreamWriter xmlwriter,Map<Feature,Object> featureMap) throws XMLStreamException{
 		if(unknownFields!=null&& unknownFields.asMap().size()>0){
 			xmlwriter.writeStartElement(AbstractCodec.getUnknownFieldElementName(featureMap));
-			xmlwriter.writeCharacters(AbstractCodec.encodeUnknownFieldsToHexString(unknownFields));
+			xmlwriter.writeCharacters(AbstractCodec.encodeUnknownFieldsToString(unknownFields));
 			xmlwriter.writeEndElement();
 		}
 	}

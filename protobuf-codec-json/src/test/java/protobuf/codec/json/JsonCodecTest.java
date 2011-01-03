@@ -8,6 +8,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.junit.Before;
@@ -23,6 +24,7 @@ import protobuf.codec.json.TypesProtoBuf.RepeatedFields;
 import protobuf.codec.json.TypesProtoBuf.Types;
 import protobuf.codec.json.TypesProtoBuf.Version;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
 
 
@@ -36,6 +38,8 @@ public class JsonCodecTest {
 
 	private Types types;
 	private String typesJson;
+	private String helloworld="HelloWorld";
+	private String helloworldInBase64=Base64.encodeBase64String(helloworld.getBytes());
 	
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -67,7 +71,9 @@ public class JsonCodecTest {
 				.setIdstring("Hello World")
 				.setIduint32(100)
 				.setIduint64(100l)
-				.setLang(Lang.HASKELL).build();
+				.setLang(Lang.HASKELL)
+				.setIdbyte(ByteString.copyFromUtf8(helloworld))
+				.build();
 		
 		JsonFactory factory=new JsonFactory();
 		
@@ -90,6 +96,8 @@ public class JsonCodecTest {
 		generator.writeNumberField("idsfixed64", types.getIdsfixed64());
 		generator.writeBooleanField("idbool", types.getIdbool());
 		generator.writeStringField("lang", Lang.HASKELL.name());
+		generator.writeStringField("idbyte", helloworldInBase64);
+
 		generator.writeEndObject();
 		generator.close();
 		typesJson=writer.toString();

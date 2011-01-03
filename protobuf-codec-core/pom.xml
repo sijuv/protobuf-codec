@@ -5,7 +5,7 @@ http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>protobuf</groupId>
 		<artifactId>protobuf-codec</artifactId>
-		<version>1.0</version>
+		<version>1.1</version>
 	</parent>
 	<artifactId>protobuf-codec-core</artifactId>
 	<packaging>jar</packaging>

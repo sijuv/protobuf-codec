@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
@@ -10,6 +11,7 @@ import protobuf.codec.AbstractCodec;
 import protobuf.codec.Codec.Feature;
 import protobuf.codec.ParseException;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.JavaType;
@@ -65,7 +67,7 @@ public class JacksonJsonReader {
 				parser.nextToken();
 				if(AbstractCodec.supportUnknownFields(featureMap)){
 					String unknownFieldsText=parser.getText();
-					AbstractCodec.mergeUnknownFieldsFromHexString(builder, extnRegistry, unknownFieldsText);
+					AbstractCodec.mergeUnknownFieldsFromString(builder, extnRegistry, unknownFieldsText);
 				}
 				continue;
 			}
@@ -117,7 +119,9 @@ public class JacksonJsonReader {
 				value = field.getEnumType().findValueByName(parser.getText());
 			} else if (JavaType.STRING.equals(field.getJavaType())) {
 				value = parser.getText();
-			} else {
+			} else if(JavaType.BYTE_STRING.equals(field.getJavaType())){
+				value=ByteString.copyFrom(Base64.decodeBase64(parser.getText()));
+			}else {
 				throw new UnsupportedEncodingException(
 						String.format(
 								"Unsupported java type [%s] for field [%s] for json type VALUE_STRING",

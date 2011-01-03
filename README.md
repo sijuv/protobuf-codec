@@ -6,6 +6,11 @@ Protobuf-codec provides codec for protobuf and other data formats like xml/json.
 
 ## UPDATES:
 
+03/Jan/11 : Disted version 1.1
+     - Base64 encode unknownfields instead of hex
+     - Added support for byte protobuf type, ByteString is written out as a base64 encoded
+       string.
+       
 08/Dec : Disted version 1.0
      - Added support for xml
      - Added support for unknown fields
@@ -28,7 +33,7 @@ Protobuf-codec provides codec for protobuf and other data formats like xml/json.
 ## DEPENDENCIES :
 - Jackson for json parsing. 
 - woodstox for xml parsing 
-- commons-codec for hex encode/decode
+- commons-codec for base64 encode/decode
 
 
 ## BUGS & ISSUES

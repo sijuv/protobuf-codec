@@ -6,11 +6,11 @@
 	<parent>
 		<artifactId>protobuf-codec</artifactId>
 		<groupId>protobuf</groupId>
-		<version>1.0</version>
+		<version>1.1</version>
 	</parent>
 	<groupId>protobuf</groupId>
 	<artifactId>protobuf-codec-xml</artifactId>
-	<version>1.0</version>
+	<version>1.1</version>
 	<name>protobuf-codec-xml</name>
 	<url>https://github.com/sijuv/protobuf-codec</url>
 	<properties>

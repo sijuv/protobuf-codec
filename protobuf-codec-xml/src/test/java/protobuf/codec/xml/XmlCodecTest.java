@@ -11,6 +11,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,6 +24,7 @@ import protobuf.codec.xml.TypesProtoBuf.RepeatedFields;
 import protobuf.codec.xml.TypesProtoBuf.Types;
 import protobuf.codec.xml.TypesProtoBuf.Version;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
 
 public class XmlCodecTest {
@@ -30,6 +32,9 @@ public class XmlCodecTest {
 	private String typesXml;
 	private Foo foo;
 	private String fooXml;
+	private String helloworld="HelloWorld";
+	private String helloworldInBase64=Base64.encodeBase64String(helloworld.getBytes());
+
 	
 	
 	@Before
@@ -49,7 +54,9 @@ public class XmlCodecTest {
 				.setIdstring("Hello World")
 				.setIduint32(100)
 				.setIduint64(100l)
-				.setLang(Lang.HASKELL).build();
+				.setLang(Lang.HASKELL)
+				.setIdbyte(ByteString.copyFromUtf8(helloworld))
+				.build();
 		
 		XMLOutputFactory factory=XMLOutputFactory.newInstance();
 		StringWriter writer=new StringWriter();
@@ -117,6 +124,11 @@ public class XmlCodecTest {
 		xmlwriter.writeStartElement("lang");
 		xmlwriter.writeCharacters(Lang.HASKELL.name());	
 		xmlwriter.writeEndElement();
+
+		xmlwriter.writeStartElement("idbyte");
+		xmlwriter.writeCharacters(helloworldInBase64);	
+		xmlwriter.writeEndElement();
+		
 		xmlwriter.writeEndElement();
 		xmlwriter.writeEndDocument();
 		xmlwriter.close();

@@ -15,10 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
-
-import protobuf.codec.Codec.Feature;
+import org.apache.commons.codec.binary.Base64;
 
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -153,16 +150,16 @@ public abstract class AbstractCodec implements Codec {
 	
 	
 	/**
-	 * Encodes the {@link UnknownFieldSet} to a hex string
+	 * Encodes the {@link UnknownFieldSet} to a base64 string
 	 * @param unknownFields
 	 * @return
 	 */
-	public static String encodeUnknownFieldsToHexString(UnknownFieldSet unknownFields){
-		return new String(Hex.encodeHex(unknownFields.toByteArray()));
+	public static String encodeUnknownFieldsToString(UnknownFieldSet unknownFields){
+		return new String(Base64.encodeBase64(unknownFields.toByteArray()));
 	}
 	
 	/**
-	 * Merges the unknownfield set, which was encoded as a hex string to provided builder
+	 * Merges the unknownfield set, which was encoded as a base64 string to provided builder
 	 * using the provided {@link ExtensionRegistry}
 	 * @param builder
 	 * @param extnReg
@@ -170,14 +167,10 @@ public abstract class AbstractCodec implements Codec {
 	 * @return
 	 * @throws InvalidProtocolBufferException
 	 */
-	public static  Builder mergeUnknownFieldsFromHexString(Builder builder,
+	public static  Builder mergeUnknownFieldsFromString(Builder builder,
 			ExtensionRegistry extnReg, String unknownFieldText) throws InvalidProtocolBufferException{
-		try {
-			byte[] unknownFields = Hex.decodeHex(unknownFieldText.toCharArray());
-			return builder.mergeFrom(unknownFields,extnReg);
-		} catch (DecoderException e) {
-			throw new ParseException("Error while decoding the hex string corresponding to the unknown fieldset",e);
-		}
+		byte[] unknownFields = Base64.decodeBase64(unknownFieldText.getBytes());
+		return builder.mergeFrom(unknownFields,extnReg);
 	}
 	
 	@Override

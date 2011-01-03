@@ -8,14 +8,14 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.binary.Base64;
 
 import protobuf.codec.AbstractCodec;
 import protobuf.codec.Codec.Feature;
 import protobuf.codec.ParseException;
 
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.ExtensionRegistry.ExtensionInfo;
 import com.google.protobuf.Message;
@@ -69,13 +69,9 @@ public class XmlReader {
 					}else if(AbstractCodec.isFieldNameUnknownField(fieldName, featureMap)){
 						xmlreader.next();
 						String unknownFieldsText=xmlreader.getText();
-						byte[] unknownFields;
-						try {
-							unknownFields = Hex.decodeHex(unknownFieldsText.toCharArray());
-						} catch (DecoderException e) {
-							throw new ParseException("Error while hex decoding unknown fields",e);
+						if(AbstractCodec.supportUnknownFields(featureMap)){
+							AbstractCodec.mergeUnknownFieldsFromString(builder, extnRegistry, unknownFieldsText);
 						}
-						builder.mergeFrom(unknownFields,extnRegistry);
 						xmlreader.next();
 						continue;
 					}
@@ -175,6 +171,9 @@ public class XmlReader {
 			value=parseElement(newBuilder, xmlreader, extnRegistry,featureMap).build();
 			break;
 		case BYTE_STRING:
+			xmlreader.next();// Move past
+			value=ByteString.copyFrom(Base64.decodeBase64(xmlreader.getText()));
+			xmlreader.next();
 			break;
 		default:
 			throw new UnsupportedEncodingException(String.format(

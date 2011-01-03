@@ -17,6 +17,7 @@ message Types{
 	optional  sfixed64 idsfixed64 = 13;
 	optional  bool idbool = 14;
 	optional Lang lang=15;
+	optional bytes idbyte=16;
 	}
 	
 	
