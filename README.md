@@ -2,6 +2,9 @@
 Protobuf-codec provides codec for protobuf and other data formats like xml/json. It is fast and relies on proven frameworks like [jackson](http://jackson.codehaus.org/)
  for json and [woodstox]( http://woodstox.codehaus.org/) for xml for parsing. 
 
+This library is listed under the protobuf third party addons page ( http://code.google.com/p/protobuf/wiki/ThirdPartyAddOns )
+as "Another JSON encoder/decoder for Java"
+
 [Project Wiki](https://github.com/sijuv/protobuf-codec/wiki)
 
 ## UPDATES:
