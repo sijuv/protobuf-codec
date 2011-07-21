@@ -177,6 +177,51 @@ public abstract class AbstractCodec implements Codec {
 	public Map<Feature, Object> getAllFeaturesSet() {
 		return Collections.unmodifiableMap(featureMap);
 	}
+
+    public static boolean stripFieldNameUnderscores(Map<Feature, Object> featureMap) {
+        return Boolean.TRUE.equals(featureMap.get(Feature.STRIP_FIELD_NAME_UNDERSCORES));
+    }
+
+    public static String stripFieldName(String fieldName, Map<Feature, Object> featureMap) {
+        if (stripFieldNameUnderscores(featureMap) && fieldName.endsWith("_")) {
+            String processed = fieldName;
+            boolean modified = false;
+            if (processed.startsWith("_")) {
+                processed = processed.substring(1);
+                modified = true;
+            }
+            if (processed.endsWith("_")) {
+                processed = processed.substring(0, processed.length()-1);
+                modified = true;
+            }
+            if (modified) {
+                return stripFieldName(processed, featureMap);
+            } else {
+                return processed;
+            }
+        }
+        return fieldName;
+    }
+
+    public static String substituteFieldNameForWriting(String fieldName, Map<Feature, Object> featureMap) {
+        return substituteFieldName(fieldName, false, featureMap);
+    }
+    public static String substituteFieldNameForReading(String fieldName, Map<Feature, Object> featureMap) {
+        return substituteFieldName(fieldName, true, featureMap);
+    }
+    public static String substituteFieldName(String fieldName, boolean read, Map<Feature, Object> featureMap) {
+        Map<String, String> aliases = Collections.EMPTY_MAP;
+        if (read && featureMap.containsKey(Feature.FIELD_NAME_READ_SUBSTITUTES)) {
+            aliases = (Map<String, String>) featureMap.get(Feature.FIELD_NAME_READ_SUBSTITUTES);
+        } else if (featureMap.containsKey(Feature.FIELD_NAME_WRITE_SUBSTITUTES)) {
+            aliases = (Map<String, String>) featureMap.get(Feature.FIELD_NAME_WRITE_SUBSTITUTES);
+        }
+        if (aliases.containsKey(fieldName)) {
+            return aliases.get(fieldName);
+        } else {
+            return fieldName;
+        }
+    }
 	
 	
 	/**
@@ -194,7 +239,7 @@ public abstract class AbstractCodec implements Codec {
 	 * Returns the field protobuf extn field name for the provided field name.
 	 * @param fieldName the provided field name
 	 * @return the protobuf field name = <field_name> for "extension_field_name>"
-	 * @throws IllegalArgumentException if {@link #isExtensionFieldName(String)} returns false
+	 * @throws IllegalArgumentException if {@link #isExtensionFieldName(String, java.util.Map)} returns false
 	 */
 	public static String parseExtensionFieldName(String fieldName,Map<Feature, Object> featureMap){
 		if(!isExtensionFieldName(fieldName,featureMap)){

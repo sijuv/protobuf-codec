@@ -49,6 +49,8 @@ public class JacksonJsonReader {
 			JsonToken currToken = parser.getCurrentToken();
 			assert (currToken.equals(JsonToken.FIELD_NAME));
 			String fieldName = parser.getCurrentName();
+            fieldName = AbstractCodec.stripFieldName(fieldName, featureMap);
+            fieldName = AbstractCodec.substituteFieldNameForReading(fieldName, featureMap);
 			FieldDescriptor field=null;
 			if(JsonCodec.isExtensionFieldName(fieldName,featureMap)){
 				fieldName=JsonCodec.parseExtensionFieldName(fieldName,featureMap);
