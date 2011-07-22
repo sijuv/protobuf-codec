@@ -12,6 +12,7 @@ http://maven.apache.org/maven-v4_0_0.xsd">
 		<module>protobuf-codec-core</module>
 		<module>protobuf-codec-json</module>
 		<module>protobuf-codec-xml</module>
+        <module>protobuf-codec-text</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
