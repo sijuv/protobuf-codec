@@ -9,6 +9,10 @@ as "Another JSON encoder/decoder for Java"
 
 ## UPDATES:
 
+20/Aug/08 : Disted version 1.2
+     - Added support for text codec (courtesy aantono)
+     - Support stripping of underscores and field name replacements for json (courtesy aantono)
+G
 03/Jan/11 : Disted version 1.1
      - Base64 encode unknownfields instead of hex
      - Added support for byte protobuf type, ByteString is written out as a base64 encoded

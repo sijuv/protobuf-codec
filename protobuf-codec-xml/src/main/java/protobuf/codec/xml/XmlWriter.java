@@ -26,73 +26,70 @@ import com.google.protobuf.UnknownFieldSet;
  *
  */
 public class XmlWriter {
-	
 
-	public static void writeXml(Message message, XMLStreamWriter xmlwriter,Map<Feature,Object> featureMap) throws XMLStreamException, IOException {
-		Iterator<Map.Entry<FieldDescriptor, Object>> iterator = message.getAllFields().entrySet().iterator(); // Get all set fields
-		while (iterator.hasNext()) {
-			Map.Entry<FieldDescriptor, Object> record = iterator.next();
-			FieldDescriptor field = record.getKey();
-			String fieldName=field.isExtension()?AbstractCodec.getExtensionFieldName(field.getName(), featureMap):field.getName();
-			Object value = record.getValue();
-			if (field.isRepeated()) {
-				Iterator<?> iter = ((List<?>) value).iterator();
-				while (iter.hasNext()) {
-					xmlwriter.writeStartElement(fieldName);
-					writeFieldValue(field, iter.next(), xmlwriter,featureMap);
-					xmlwriter.writeEndElement();
-				}
-			} else {
-				xmlwriter.writeStartElement(fieldName);
-				writeFieldValue(field, value, xmlwriter,featureMap);
-				xmlwriter.writeEndElement();
-			}
-		}
-		if(AbstractCodec.supportUnknownFields(featureMap)){
-			writeUnknownFields(message.getUnknownFields(), xmlwriter,featureMap);
-		}
+    public static void writeXml(Message message, XMLStreamWriter xmlwriter, Map<Feature, Object> featureMap) throws XMLStreamException, IOException {
+        Iterator<Map.Entry<FieldDescriptor, Object>> iterator = message.getAllFields().entrySet().iterator(); // Get all set fields
+        while (iterator.hasNext()) {
+            Map.Entry<FieldDescriptor, Object> record = iterator.next();
+            FieldDescriptor field = record.getKey();
+            String fieldName = field.isExtension() ? AbstractCodec.getExtensionFieldName(field.getName(), featureMap) : field.getName();
+            fieldName = AbstractCodec.substituteFieldNameForWriting(fieldName, featureMap);
+            Object value = record.getValue();
+            if (field.isRepeated()) {
+                Iterator<?> iter = ((List<?>) value).iterator();
+                while (iter.hasNext()) {
+                    xmlwriter.writeStartElement(fieldName);
+                    writeFieldValue(field, iter.next(), xmlwriter, featureMap);
+                    xmlwriter.writeEndElement();
+                }
+            } else {
+                xmlwriter.writeStartElement(fieldName);
+                writeFieldValue(field, value, xmlwriter, featureMap);
+                xmlwriter.writeEndElement();
+            }
+        }
+        if (AbstractCodec.supportUnknownFields(featureMap)) {
+            writeUnknownFields(message.getUnknownFields(), xmlwriter, featureMap);
+        }
 
-	}
-	
-	
+    }
 
-	
-	// Extract the field value depending on its java type
-	private static void writeFieldValue(FieldDescriptor fieldDesc,Object value,
-			XMLStreamWriter writer,Map<Feature,Object> featureMap) throws XMLStreamException,IOException {
+    // Extract the field value depending on its java type
+    private static void writeFieldValue(FieldDescriptor fieldDesc, Object value,
+            XMLStreamWriter writer, Map<Feature, Object> featureMap) throws XMLStreamException, IOException {
 
-		switch (fieldDesc.getJavaType()) {
-		case INT:
-		case LONG:
-		case FLOAT:
-		case DOUBLE:
-		case BOOLEAN:
-		case STRING:
-			writer.writeCharacters(value.toString());
-			break;
-		case ENUM:
-			writer.writeCharacters(((EnumValueDescriptor) value).getName());
-			break;
-		case BYTE_STRING:
-			writer.writeCharacters(Base64.encodeBase64String(((ByteString)value).toByteArray()));
-			break;
-		case MESSAGE:
-			writeXml((Message) value, writer,featureMap);
-			break;
-		default:
-			throw new UnsupportedEncodingException(
-					String.format(
-							"Unspupported protobuf java field type [%s] for field [%s] ",
-							fieldDesc.getJavaType(), fieldDesc.getName()));
+        switch (fieldDesc.getJavaType()) {
+            case INT:
+            case LONG:
+            case FLOAT:
+            case DOUBLE:
+            case BOOLEAN:
+            case STRING:
+                writer.writeCharacters(value.toString());
+                break;
+            case ENUM:
+                writer.writeCharacters(((EnumValueDescriptor) value).getName());
+                break;
+            case BYTE_STRING:
+                writer.writeCharacters(Base64.encodeBase64String(((ByteString) value).toByteArray()));
+                break;
+            case MESSAGE:
+                writeXml((Message) value, writer, featureMap);
+                break;
+            default:
+                throw new UnsupportedEncodingException(
+                        String.format(
+                        "Unspupported protobuf java field type [%s] for field [%s] ",
+                        fieldDesc.getJavaType(), fieldDesc.getName()));
 
-		}
-	}
-	
-	public static void writeUnknownFields(UnknownFieldSet unknownFields,XMLStreamWriter xmlwriter,Map<Feature,Object> featureMap) throws XMLStreamException{
-		if(unknownFields!=null&& unknownFields.asMap().size()>0){
-			xmlwriter.writeStartElement(AbstractCodec.getUnknownFieldElementName(featureMap));
-			xmlwriter.writeCharacters(AbstractCodec.encodeUnknownFieldsToString(unknownFields));
-			xmlwriter.writeEndElement();
-		}
-	}
+        }
+    }
+
+    public static void writeUnknownFields(UnknownFieldSet unknownFields, XMLStreamWriter xmlwriter, Map<Feature, Object> featureMap) throws XMLStreamException {
+        if (unknownFields != null && unknownFields.asMap().size() > 0) {
+            xmlwriter.writeStartElement(AbstractCodec.getUnknownFieldElementName(featureMap));
+            xmlwriter.writeCharacters(AbstractCodec.encodeUnknownFieldsToString(unknownFields));
+            xmlwriter.writeEndElement();
+        }
+    }
 }
