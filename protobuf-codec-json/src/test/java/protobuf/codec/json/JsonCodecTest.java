@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.codehaus.jackson.JsonFactory;
@@ -307,5 +309,37 @@ public class JsonCodecTest {
 		foo2=codec.toMessage(Foo.class, new StringReader(writer.toString()),reg);
 		assertEquals(foo1, foo2);
 	}
+
+    @Test
+    public void testForFieldNameReplacements() throws Exception {
+        Foo obj = Foo.newBuilder().setId(1).setName("FooName").build();
+
+        StringWriter writer = new StringWriter();
+        JsonGenerator generator = new JsonFactory().createJsonGenerator(writer);
+        generator.writeStartObject();
+        generator.writeNumberField("_id", 1);
+        generator.writeStringField("name_", "FooName");
+        generator.writeEndObject();
+        generator.close();
+
+        Codec codec = new JsonCodec();
+        Map<String, String> replaces = new HashMap<String, String>();
+        replaces.put("name", "name_");
+        replaces.put("id", "_id");
+        codec.setFeature(Codec.Feature.FIELD_NAME_WRITE_SUBSTITUTES, replaces);
+        replaces = new HashMap<String, String>();
+        replaces.put("name_", "name");
+        replaces.put("_id", "id");
+        codec.setFeature(Codec.Feature.FIELD_NAME_READ_SUBSTITUTES, replaces);
+
+        StringWriter out = new StringWriter();
+        codec.fromMessage(obj, out);
+
+        assertEquals(writer.toString(), out.toString());
+
+        Foo msg = codec.toMessage(Foo.class, new StringReader(out.toString()));
+
+        assertEquals(obj, msg);
+    }
 
 }

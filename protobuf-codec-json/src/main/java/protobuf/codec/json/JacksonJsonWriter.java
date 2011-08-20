@@ -43,6 +43,7 @@ public class JacksonJsonWriter {
 			Map.Entry<FieldDescriptor, Object> record = iterator.next();
 			FieldDescriptor field = record.getKey();
 			String fieldName = field.isExtension() ?JsonCodec.getExtensionFieldName(field.getName(),featureMap): field.getName(); // If extn field? box
+            fieldName = AbstractCodec.substituteFieldNameForWriting(fieldName, featureMap);
 			Object value = record.getValue();
 			if (field.isRepeated()) {
 				generator.writeArrayFieldStart(fieldName);

@@ -38,12 +38,12 @@ public interface Codec {
 	 * Write this Message {@link Message} to the provided output stream. The underlying stream is not closed by default, 
 	 * user {@link Feature#CLOSE_STREAM} for the required settings.
 	 * The default values are not written out, the reason being that the client should be aware of the protobuf schema.
-	 * The {@link UnknownFieldSet} are written out on whether the {@link Feature#UNKNOWN_FIELDS} is set. By default, {@link UnknownFieldSet}
+	 * The {@link UnknownFieldSet} are written out on whether the {@link Feature#UNKNOWN_FIELD_ELEM_NAME} is set. By default, {@link UnknownFieldSet}
 	 * is written out Check the codec implementation on how the unknown field set is written out.
 	 * Extension fields are written out and the naming depends on the {@link Feature#EXTENSION_FIELD_NAME_PREFIX} set. 
 	 * If an extension field  not provided in the registry is encountered that field is skipped.
 	 * @param message the {@link Message}
-	 * @param os the output stream
+	 * @param writer the output stream writer
 	 * @throws IOException
 	 * @throws IllegalArgumentException if the provided message is not initialized 
 	 */
@@ -55,12 +55,12 @@ public interface Codec {
 	 * In case null values encountered are skipped since protobuf does not support null values yet 
 	 * ( http://code.google.com/p/protobuf/issues/detail?id=57 )
 	 * The default values are not written out, the reason being that the client should be aware of the protobuf schema.
-	 * The {@link UnknownFieldSet} are read in depending on whether the {@link Feature#UNKNOWN_FIELDS} is set. By default, {@link UnknownFieldSet}
+	 * The {@link UnknownFieldSet} are read in depending on whether the {@link Feature#UNKNOWN_FIELD_ELEM_NAME} is set. By default, {@link UnknownFieldSet}
 	 * is read in. Check the codec implementation on how the unknown field need to be passed in.
 	 * Extension field names depend on {@link Feature#EXTENSION_FIELD_NAME_PREFIX}
 	 * If an extension field  not provided in the registry is encountered that field is skipped.
 	 * @param messageType the {@link Class} corresponding to the {@link Message} the stream needs to be read into
-	 * @param in the input stream
+	 * @param reader the input stream reader
 	 * @return the {@link Message}
 	 * @throws IOException
 	 */
@@ -76,7 +76,7 @@ public interface Codec {
 	 * is identified to be an extension field, but a corresponding mapping is not found in the registry, then 
 	 * the field is skipped.
 	 * @param messageType the {@link Class} corresponding to the {@link Message} the stream needs to be read into
-	 * @param in the input stream
+	 * @param reader the input stream reader
 	 * @param extnRegistry the extension registry which contains the defn for extension fields.
 	 * @return the {@link Message}
 	 * @throws IOException
@@ -114,7 +114,7 @@ public interface Codec {
 	 * @param extnRegistry the extension registry
 	 * @return
 	 * @throws IOException
-	 * @see {@link #toMessage(Reader)}
+	 * @see {@link #toMessage(Class, Reader)}
 	 */
 	<T extends Message> T toMessage(Class<T> messageType,InputStream in,ExtensionRegistry extnRegistry) throws IOException;
 	
@@ -162,6 +162,11 @@ public interface Codec {
 		/** Unknown field element name */
 		UNKNOWN_FIELD_ELEM_NAME,
 		/** Extension field name prefix */
-		EXTENSION_FIELD_NAME_PREFIX;
+		EXTENSION_FIELD_NAME_PREFIX,
+        /** Strip leading and trailing underscores from field names */
+        STRIP_FIELD_NAME_UNDERSCORES,
+        /** Provide field name substitutes for reading and writing from/to a protobuf stream*/
+        FIELD_NAME_READ_SUBSTITUTES,
+        FIELD_NAME_WRITE_SUBSTITUTES;
 	}
 }
